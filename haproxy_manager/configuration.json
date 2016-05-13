@@ -3,5 +3,5 @@
 	"version": "v1",
 	"file_conf": "template.cfg",
 	"stats": true,
-	"sleep": 7
+	"sleep": 3
 }

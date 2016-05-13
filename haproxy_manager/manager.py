@@ -14,9 +14,9 @@ kube_api = data["kube_api"]
 version = data["version"]
 time_sleep = data["sleep"]
 
-dic_svc_actives = {}
 dic_svc_old = {}
 while True:
+	dic_svc_actives = {}
 	get_json_svcs = get_kube_api(kube_api, version, 'services')['items']
 	for svc in get_json_svcs:
 		try:
@@ -31,4 +31,4 @@ while True:
 	 	print "Reload HAProxy"
 	 	write_template_conf()
 	dic_svc_old = dic_svc_actives
-	sleep(time_sleep)
+	sleep(time_sleep)l
