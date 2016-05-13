@@ -11,7 +11,7 @@ class MyDaemon(Daemon):
 		hap_manager()
 
 if __name__ == "__main__":
-	daemon = MyDaemon('/tmp/hap_manager_daemon.pid')
+	daemon = MyDaemon('/var/run/hap_manager_daemon.pid')
 	if len(sys.argv) == 2:
 		if 'start' == sys.argv[1]:
 			daemon.start()
