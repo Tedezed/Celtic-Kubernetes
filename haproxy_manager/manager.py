@@ -17,12 +17,7 @@ time_sleep = data["sleep"]
 dic_svc_actives = {}
 dic_svc_old = {}
 while True:
-	# --- Delete me ---
-	#dic_svc_actives = {}
-	#with open('test.json') as data_file:    
-    #		get_json_svcs = load(data_file)["items"]
-    # --- ----
-    get_json_svcs = get_kube_api(kube_api, version, 'services')['items']
+	get_json_svcs = get_kube_api(kube_api, version, 'services')['items']
 	for svc in get_json_svcs:
 		try:
 			svc_node_port = svc['spec']['ports'][0]['nodePort']
