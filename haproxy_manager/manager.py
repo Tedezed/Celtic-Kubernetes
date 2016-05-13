@@ -31,4 +31,4 @@ while True:
 	 	print "Reload HAProxy"
 	 	write_template_conf()
 	dic_svc_old = dic_svc_actives
-	sleep(time_sleep)l
+	sleep(time_sleep)
