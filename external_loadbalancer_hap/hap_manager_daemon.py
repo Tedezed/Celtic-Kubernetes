@@ -68,7 +68,7 @@ class MyDaemon(Daemon):
 
 
 if __name__ == "__main__":
-	daemon = MyDaemon("/var/run/hap_manager.pid")
+	daemon = MyDaemon("/tmp/daemon-pidfile.pid")
 	global directory 
 	directory = os.path.dirname(os.path.realpath(__file__))+"/"
 	if (len(sys.argv) == 2):
