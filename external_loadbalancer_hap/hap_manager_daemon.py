@@ -44,26 +44,11 @@ class MyDaemon(Daemon):
 				dic_svc_old = dic_svc_actives
 				sleep(time_sleep)
 		except IOError as e:
-			f = file("/tmp/error_hap.txt", "a+")
-			f.write("[ %s ] I/O error(%s)\n" % (strftime("%H:%M:%S"), e))
-			f.close()
-			sys.exit(1)
+			sys.stderr.write("[ %s ] I/O error(%s)\n" % (strftime("%H:%M:%S"), e))
+			sleep(10)
 		except NameError as e:
-			f = file("/tmp/error_hap.txt", "a+")
-			f.write("[ %s ] NameError error(%s)\n" % (strftime("%H:%M:%S"), e))
-			f.close()
-			sys.exit(1)
-		except TypeError as e:
-			f = file("/tmp/error_hap.txt", "a+")
-			f.write("[ %s ] TypeError error(%s)\n" % (strftime("%H:%M:%S"), e))
-			f.close()
-			sys.exit(1)
-		except:
-			f = file("/tmp/error_hap.txt", "a+")
-			f.write("[ %s ] Unexpected error: %s" % (strftime("%H:%M:%S"), sys.exc_info()[0]))
-			f.write("\n")
-			f.close()
-			sys.exit(1)
+			sys.stderr.write("[ %s ] NameError (%s)\n" % (strftime("%H:%M:%S"), e))
+			sleep(10)
 		sleep(2)
 
 
