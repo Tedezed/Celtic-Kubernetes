@@ -41,11 +41,16 @@ Modify configuration.json
 	
 		"kube_api": "10.0.0.39:8080"
 
+Enable Haproxy
+
+	systemctl enable haproxy
+
 #### Test
 
 	python hap_manager_daemon.py start
 	python hap_manager_daemon.py stop
-
+	sh haproxy_reload
+	
 #### Unit for systemd
 
 Copy file hap_manager.service
