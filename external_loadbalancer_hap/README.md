@@ -1,5 +1,5 @@
-External Loadbalancer for HAProxy
-=================================
+External Loadbalancer for Kubernetes
+====================================
 
 Inspired by [service-loadbalancer](https://github.com/kubernetes/contrib/tree/master/service-loadbalancer)
 
