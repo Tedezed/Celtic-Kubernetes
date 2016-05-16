@@ -1,7 +1,0 @@
-{
-	"kube_api": "morrigan:8080",
-	"version": "v1",
-	"file_conf": "template.cfg",
-	"stats": true,
-	"sleep": 3
-}

@@ -1,6 +1,0 @@
-{"items": [
-	{"spec": {"ports": [{"nodePort": 34345}]},"metadata": {"name":"morrigan"}},
-	{"spec": {"metadata": {"name":"artio"}}},
-	{"spec": {"ports": [{"nodePort": 34567}]},"metadata": {"name":"balar"}},
-	{"spec": {"ports": [{"nodePort": 34890}]},"metadata": {"name":"esus"}}
-]}
