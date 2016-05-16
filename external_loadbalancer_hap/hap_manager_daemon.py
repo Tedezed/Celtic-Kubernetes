@@ -20,10 +20,6 @@ class MyDaemon(Daemon):
 
 	def hap_manager(self):
 		try:
-			f = file("/tmp/directory.txt", "a+")
-			f.write("%s \n" % directory)
-			f.close()
-
 			data = get_conf(directory)
 			kube_api = data["kube_api"]
 			version = data["version"]
@@ -48,22 +44,22 @@ class MyDaemon(Daemon):
 				dic_svc_old = dic_svc_actives
 				sleep(time_sleep)
 		except IOError as e:
-			f = file("/tmp/error.txt", "a+")
+			f = file("/tmp/error_hap.txt", "a+")
 			f.write("[ %s ] I/O error(%s)\n" % (strftime("%H:%M:%S"), e))
 			f.close()
 			sys.exit(1)
 		except NameError as e:
-			f = file("/tmp/error.txt", "a+")
+			f = file("/tmp/error_hap.txt", "a+")
 			f.write("[ %s ] NameError error(%s)\n" % (strftime("%H:%M:%S"), e))
 			f.close()
 			sys.exit(1)
 		except TypeError as e:
-			f = file("/tmp/error.txt", "a+")
+			f = file("/tmp/error_hap.txt", "a+")
 			f.write("[ %s ] TypeError error(%s)\n" % (strftime("%H:%M:%S"), e))
 			f.close()
 			sys.exit(1)
 		except:
-			f = file("/tmp/error.txt", "a+")
+			f = file("/tmp/error_hap.txt", "a+")
 			f.write("[ %s ] Unexpected error: %s" % (strftime("%H:%M:%S"), sys.exc_info()[0]))
 			f.write("\n")
 			f.close()
