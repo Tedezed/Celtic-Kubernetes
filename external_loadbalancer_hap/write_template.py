@@ -25,6 +25,7 @@ def write_template_conf(directory):
     	stats=stats
 	)
 
-	file_conf =open('/etc/haproxy/template.cfg','w')
+	#file_conf =open('/etc/haproxy/template.cfg','w')
+	file_conf =open('/etc/haproxy/haproxy.cfg','w')
 	file_conf.write(template_render)
 	file_conf.close()

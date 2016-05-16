@@ -25,4 +25,5 @@
 
 socat /tmp/haproxy - <<< "show servers state" > /var/state/haproxy/global
 
-haproxy -f /etc/haproxy/template.cfg -p /var/run/haproxy.pid -D -sf $(cat /var/run/haproxy.pid)
+#haproxy -f /etc/haproxy/template.cfg -p /var/run/haproxy.pid -D -sf $(cat /var/run/haproxy.pid)
+haproxy -f /etc/haproxy/haproxy.cfg -p /run/haproxy.pid  -D -sf $(cat /run/haproxy.pid)
