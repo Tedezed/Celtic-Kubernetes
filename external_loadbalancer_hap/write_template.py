@@ -8,11 +8,14 @@ from jinja2 import Environment, FileSystemLoader
 from manager_tools import *
 
 def write_template_conf(directory):
-	data = get_conf(directory)
+	data = get_conf(directory,'configuration.json')
 	kube_api = data["kube_api"]
 	version = data["version"]
 	file_conf = data["file_conf"]
 	stats = data["stats"]
+
+	# For test with pod cluster IP and flannel
+	#get_json_pods = get_conf(directory,'test.json')['items']
 
 	get_json_svcs = get_kube_api(kube_api, version, 'services')['items']
 	get_json_nodes = get_kube_api(kube_api, version, 'nodes')['items']
@@ -25,7 +28,19 @@ def write_template_conf(directory):
     	stats=stats
 	)
 
-	#file_conf =open('/etc/haproxy/template.cfg','w')
 	file_conf =open('/etc/haproxy/haproxy.cfg','w')
 	file_conf.write(template_render)
 	file_conf.close()
+
+	# For test with pod cluster IP and flannel
+	#for pod in get_json_pods:
+	#	print pod['status']['podIP']
+	#	print pod['metadata']['name']
+	#	try:
+	#		print loads(pod['metadata']['annotations']['kubernetes.io/created-by'])['reference']['name']
+	#	except KeyError:
+	#		pass
+	#	print ''
+	#print get_json_pods[3]['status']['podIP']
+	#print get_json_pods[3]['metadata']['name']
+	#print loads(get_json_pods[3]['metadata']['annotations']['kubernetes.io/created-by'])['reference']['name']

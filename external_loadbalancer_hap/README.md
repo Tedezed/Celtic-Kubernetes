@@ -70,3 +70,5 @@ Start hap_manager.service
 	systemctl start hap_manager.service
 
 	systemctl enable hap_manager.service
+
+Enter with http://IP-SERVER/NAME-SERVICE/

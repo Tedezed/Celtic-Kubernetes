@@ -13,8 +13,8 @@ def get_kube_api(kube_api, version, get_type):
 	return json_api
 
 # Load configuration
-def get_conf(directory):
-	with open(directory+'configuration.json') as data_file:    
+def get_conf(directory, json_conf):
+	with open(directory+json_conf) as data_file:    
     		data = load(data_file)
     	return data
 

@@ -20,7 +20,7 @@ class MyDaemon(Daemon):
 
 	def hap_manager(self):
 		try:
-			data = get_conf(directory)
+			data = get_conf(directory,'configuration.json')
 			kube_api = data["kube_api"]
 			version = data["version"]
 			time_sleep = data["sleep"]
