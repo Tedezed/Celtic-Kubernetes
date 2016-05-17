@@ -5,22 +5,22 @@ Inspired by [service-loadbalancer](https://github.com/kubernetes/contrib/tree/ma
 
 #### Instalation
 
-Clone repository
-
-	git clone https://github.com/Tedezed/Celtic-Kubernetes.git
-
 Install basic sowftware
 
 	yum install epel-release
-	yum install haproxy
-	yum install python-pip
-	pip install jija2
+	yum install haproxy git socat python-pip
+	pip install jinja2
 	pip install deepdiff
+
+Clone repository in /
+
+	git clone https://github.com/Tedezed/Celtic-Kubernetes.git
 
 Create errors html
 
 	mkdir /etc/haproxy/errors/
-	cp /Celtic-Kubernetes/haproxy_manager/errors/* /etc/haproxy/errors/
+	cp /Celtic-Kubernetes/external_loadbalancer_hap/errors/* /etc/haproxy/errors/
+	cp /Celtic-Kubernetes/external_loadbalancer_hap/system/haproxy.cfg /etc/haproxy/
 
 Create state global
 
@@ -71,4 +71,68 @@ Start hap_manager.service
 
 	systemctl enable hap_manager.service
 
-Enter with http://IP-SERVER/NAME-SERVICE/
+See settings
+
+	cat /etc/haproxy/haproxy.cfg | grep acl
+
+#### Define services
+
+Example rc
+
+	apiVersion: v1
+	kind: ReplicationController
+	metadata:
+	 name: nginx-controller
+	spec:
+	 replicas: 2
+	 selector:
+	   name: nginx
+	 template:
+	   metadata:
+	     labels:
+	       name: nginx
+	   spec:
+	     containers:
+	       - name: nginx
+	         image: nginx
+	         ports:
+	           - containerPort: 80
+
+Example svc
+
+	apiVersion: v1
+	kind: Service
+	metadata:
+	  name: nginx-service-domain
+	  labels:
+	    app: nginx
+	spec:
+	  type: NodePort
+	  ports:
+	  - port: 80
+	    protocol: TCP
+	    name: http
+	  selector:
+	    name: nginx
+
+Enter with http://IP-SERVER-HAP/NAME-SERVICE/
+
+You need domain for the service, no problem
+
+Example svc with domain
+
+	apiVersion: v1
+	kind: Service
+	metadata:
+	  name: nginx-service-domain
+	  labels:
+	    app: nginx
+	    domain: www.test-domain.com
+	spec:
+	  type: NodePort
+	  ports:
+	  - port: 80
+	    protocol: TCP
+	    name: http
+	  selector:
+	    name: nginx
