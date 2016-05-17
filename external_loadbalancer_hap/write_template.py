@@ -28,9 +28,12 @@ def write_template_conf(directory):
     	stats=stats
 	)
 
-	file_conf =open('/etc/haproxy/haproxy.cfg','w')
+	file_conf = open('/etc/haproxy/haproxy.cfg','w')
 	file_conf.write(template_render)
 	file_conf.close()
+
+	# Dominion
+	#print get_json_pods[3]['metadata']['labels']['domain']
 
 	# For test with pod cluster IP and flannel
 	#for pod in get_json_pods:
