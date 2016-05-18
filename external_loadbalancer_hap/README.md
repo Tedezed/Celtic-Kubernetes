@@ -115,7 +115,7 @@ Example svc
 	  selector:
 	    name: nginx
 
-Enter with http://IP-SERVER-HAP/NAME-SERVICE/
+Enter with `http://IP-SERVER-HAP/NAME-SERVICE/`
 
 You need domain for the service, no problem
 
