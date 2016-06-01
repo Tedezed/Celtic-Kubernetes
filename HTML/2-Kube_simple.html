@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
+</head>
+<body>
+<p><a href="1-Portada.html">Index</a> - <a href="1-Portada.html">Anterior</a> | <a href="3-Kube_HA_pcs.html">Siguiente</a></p>
+<hr />
+<h1 id="kubernetes-simple-1-master-y-1-minion">Kubernetes simple (1 Master y 1 Minion)</h1>
+<div id='simple-escenario'/>
+
+<h2 id="escenario">Escenario</h2>
+<ul>
+<li>Infraestructura Kubernetes HA</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Nombre</th>
+<th align="left">Función</th>
+<th align="left">IP externa</th>
+<th align="left">IP interna</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>Morrigan</strong></td>
+<td align="left">Kubernetes master 1</td>
+<td align="left">172.22.205.240</td>
+<td align="left">10.0.0.43</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Artio</strong></td>
+<td align="left">Kubernetes minion 1</td>
+<td align="left">172.22.205.242</td>
+<td align="left">10.0.0.45</td>
+</tr>
+</tbody>
+</table>
+<h2 id="esquema-de-funcionamiento">Esquema de funcionamiento</h2>
+<div class="figure">
+<img src="Imagenes/topo0.jpg" alt="Simple" /><p class="caption">Simple</p>
+</div>
+<div id='simple-previo'/>
+
+<h2 id="configuración-previa">Configuración previa</h2>
+<h5 id="configuración-de-nombres">Configuración de nombres</h5>
+<pre><code>echo &quot;10.0.0.43  morrigan
+10.0.0.45    artio&quot; &gt;&gt; /etc/hosts</code></pre>
+<h5 id="repositorios-masters-y-minions">Repositorios (Masters y minions)</h5>
+<pre><code>sudo yum install epel-release
+
+sudo nano /etc/yum.repos.d/virt7-docker-common-release.repo
+[virt7-docker-common-release]
+name=virt7-docker-common-release
+baseurl=http://cbs.centos.org/repos/virt7-docker-common-release/x86_64/os/
+gpgcheck=0
+
+
+sudo yum -y install --enablerepo=virt7-docker-common-release kubernetes</code></pre>
+<div id='simple-instalacion'/>
+
+<h2 id="instalación">Instalación</h2>
+<ul>
+<li><p>Master</p>
+<pre><code>yum -y install etcd kubernetes</code></pre></li>
+<li><p>Minion</p>
+<pre><code>yum -y install flannel kubernetes</code></pre></li>
+</ul>
+<div id='simple-configuracion'/>
+
+<h2 id="configuración">Configuración</h2>
+<div id='simple-conf-kubernetes'/>
+
+<h4 id="configuración-kubernetes-master-y-minion">Configuración Kubernetes (Master y minion)</h4>
+<p>Editamos <code>/etc/kubernetes/config</code></p>
+<pre><code>KUBE_ETCD_SERVERS=&quot;--etcd-servers=http://morrigan:2379&quot;
+KUBE_LOGTOSTDERR=&quot;--logtostderr=true&quot;
+KUBE_LOG_LEVEL=&quot;--v=0&quot;
+KUBE_ALLOW_PRIV=&quot;--allow-privileged=true&quot;
+KUBE_MASTER=&quot;--master=http://morrigan:8080&quot;</code></pre>
+<div id='simple-apiserver'/>
+
+<h4 id="configuración-apiserver-master">Configuración Apiserver (Master)</h4>
+<p>Editamos <code>/etc/kubernetes/apiserver</code></p>
+<pre><code>KUBE_API_ADDRESS=&quot;--address=0.0.0.0&quot;
+KUBE_API_PORT=&quot;--port=8080&quot;
+KUBE_MASTER=&quot;--master=http://morrigan:8080&quot;
+KUBELET_PORT=&quot;--kubelet-port=10250&quot;
+KUBE_ETCD_SERVERS=&quot;--etcd-servers=http://morrigan:2379&quot;
+KUBE_SERVICE_ADDRESSES=&quot;--service-cluster-ip-range=10.254.0.0/16&quot;
+KUBE_ADMISSION_CONTROL=&quot;--admission-control=NamespaceLifecycle,NamespaceExists,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota&quot;
+KUBE_API_ARGS=&quot;&quot;</code></pre>
+<p>Habilitamos y ejecutamos las siguientes unidades</p>
+<pre><code>for SERVICES in etcd kube-apiserver kube-controller-manager kube-scheduler; do 
+    systemctl restart $SERVICES
+    systemctl enable $SERVICES
+    systemctl status $SERVICES 
+done</code></pre>
+<div id='simple-kubelet'/>
+
+<h4 id="configuración-kubelet-minion">Configuración Kubelet (Minion)</h4>
+<p>Editamos <code>/etc/kubernetes/kubelet</code></p>
+<pre><code>KUBELET_ADDRESS=&quot;--address=0.0.0.0&quot;
+KUBELET_PORT=&quot;--port=10250&quot;
+KUBELET_HOSTNAME=&quot;--hostname-override=artio&quot;
+KUBELET_API_SERVER=&quot;--api-servers=http://morrigan:8080&quot;
+KUBELET_ARGS=&quot;&quot;</code></pre>
+<p>Habilitamos y ejecutamos las siguientes unidades</p>
+<pre><code>for SERVICES in kube-proxy kubelet docker; do 
+    systemctl restart $SERVICES
+    systemctl enable $SERVICES
+    systemctl status $SERVICES 
+done</code></pre>
+<p>Podemos comprobar el estado del minion Artio con</p>
+<p><code>kubectl get nodes</code></p>
+<pre><code>NAME            LABELS                                  STATUS    AGE
+artio     kubernetes.io/hostname=artio                  Ready     1m</code></pre>
+<hr />
+<p><a href="1-Portada.html">Anterior</a> | <a href="3-Kube_HA_pcs.html">Siguiente</a></p>
+</body>
+</html>

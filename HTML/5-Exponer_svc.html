@@ -1,0 +1,376 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
+</head>
+<body>
+<p><a href="1-Portada.html">Index</a> - <a href="4-Addons.html">Anterior</a> | <a href="6-Almacenamiento.html">Siguiente</a></p>
+<hr />
+<h1 id="exponer-servicios">Exponer servicios</h1>
+<h2 id="exponer-servicions-con-haproxy">Exponer servicions con HAProxy</h2>
+<ul>
+<li><a href="https://github.com/kubernetes/contrib/tree/master/service-loadbalancer">Fuente Github</a></li>
+<li><a href="http://www.dasblinkenlichten.com/kubernetes-101-external-access-into-the-cluster/">Modo 1. por puerto</a></li>
+<li><a href="http://severalnines.com/blog/wordpress-application-clustering-using-kubernetes-haproxy-and-keepalived">Modo 2. por IP</a></li>
+<li><a href="http://docs.openstack.org/developer/magnum/dev/dev-kubernetes-load-balancer.html">Exponer con OpenStack</a></li>
+</ul>
+<p>Creamos un rc para nginx, este es el que utilizaremos de ejemplo</p>
+<p><code>kubectl create -f nginx.yaml</code></p>
+<pre><code>apiVersion: v1
+kind: ReplicationController
+metadata:
+ name: nginx-controller
+spec:
+ replicas: 2
+ selector:
+   name: nginx
+ template:
+   metadata:
+     labels:
+       name: nginx
+   spec:
+     containers:
+       - name: nginx
+         image: nginx
+         ports:
+           - containerPort: 80</code></pre>
+<p>El siguiente paso, es crear un servicio para nuestro rc de nginx</p>
+<p><code>kubectl create -f nginx-service.yaml</code></p>
+<pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  labels:
+    app: nginx
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    protocol: TCP
+    name: http
+  selector:
+    name: nginx</code></pre>
+<p>Cuando lo creamos nos especificara el puerto de la siguiente forma</p>
+<pre><code>You have exposed your service on an external port on all nodes in your
+cluster.  If you want to expose this service to the external internet, you may
+need to set up firewall rules for the service port(s) (tcp:30630) to serve traffic.</code></pre>
+<p>Ya podremos acceder con la IPs de los minions y el puerto anterior</p>
+<pre><code>http://172.22.205.242:30630/
+http://172.22.205.243:30630/</code></pre>
+<p>Creamos servicios para realizar un breve test, apuntando a nginx para prueba, un segundo servicio con un nuevo puerto y el tercero con cluster IP.</p>
+<p><code>kubectl create -f nginx-service2.yaml</code></p>
+<pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service2
+  labels:
+    app: nginx
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    protocol: TCP
+    name: http
+  selector:
+    name: nginx
+
+You have exposed your service on an external port on all nodes in your
+cluster.  If you want to expose this service to the external internet, you may
+need to set up firewall rules for the service port(s) (tcp:30357) to serve traffic.</code></pre>
+<p><code>kubectl create -f nginx-service3.yaml</code></p>
+<pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service3
+  labels:
+    app: nginx
+spec:
+  clusterIP: 10.254.10.10
+  ports:
+  - port: 80
+    protocol: TCP
+    name: http
+  selector:
+    name: nginx</code></pre>
+<p>Configuración de HAProxy externo (Tanaris)</p>
+<p>En primer lugar copiamos la configuración por defecto</p>
+<pre><code>cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.old</code></pre>
+<h4 id="configuración-de-haproxy">Configuración de HAProxy</h4>
+<p><code>nano /etc/haproxy/haproxy.cfg</code></p>
+<pre><code>##--------------------------##
+#   Configuracion HAproxy    #
+##--------------------------##
+global
+    log 127.0.0.1   local0
+    log 127.0.0.1   local1 notice
+    maxconn 4096
+    user haproxy
+    group haproxy
+    daemon
+
+defaults
+  mode http
+  log  global
+  option  redispatch
+  maxconn 65535
+  contimeout 5000
+  clitimeout 50000
+  srvtimeout 50000
+  retries  3
+  log 127.0.0.1 local3
+  timeout  http-request 6s
+  timeout  queue 6s
+  timeout  connect 5s
+  timeout  client 5s
+  timeout  server 5s
+  timeout  check 5s
+  option httpclose
+
+frontend all
+    bind *:80
+
+    # Definiendo hosts
+    acl host_nginx1 hdr(host) -i www.nginx1.example.kubernetes
+    acl host_nginx2 hdr(host) -i www.nginx2.example.kubernetes
+    acl url_nginx1 path_beg -i /nginx1
+    acl url_nginx2 path_beg -i /nginx2
+
+    # Punteros if a backend
+    use_backend nginx1_back if host_nginx1
+    use_backend nginx2_back if host_nginx2
+    use_backend nginx1_back if url_nginx1
+    use_backend nginx2_back if url_nginx2
+
+    # Por defecto para el puerto 80
+    default_backend nomatch
+
+backend nginx1_back
+    balance roundrobin
+    option forwardfor
+    option httpchk HEAD /index.html HTTP/1.0
+    server artio 172.22.205.242:30630 check
+    server esus 172.22.205.243:30630 check
+    
+backend nginx2_back
+    balance roundrobin
+    server artio 172.22.205.242:30357 check
+    server esus 172.22.205.243:30357 check
+
+backend nomatch
+    errorfile 503 /var/www/404.html</code></pre>
+<p>Reiniciamos la unidad</p>
+<pre><code>systemctl restart haproxy</code></pre>
+<div id='hap_manager'/>
+
+<h2 id="haproxy-externo-sincronizado-con-kubernetes">HAProxy externo sincronizado con Kubernetes</h2>
+<p>Partiendo de tener dos servidores configurados y funcionando con <strong>external_loadbalancer_hap</strong></p>
+<p>Seria recomendable instalar <strong>NTP</strong> en Belenus y Tanaris como en <a href="3-Kube_HA_pcs.html#previo">despliegue de kubernetes en HA con PCS</a></p>
+<p>Instalación de pcs</p>
+<pre><code>yum install pcs</code></pre>
+<p><a href="3-Kube_HA_pcs.html#conf-pcs">Configuración con PCS</a></p>
+<p>Autorizamos los nodos (Belenus)</p>
+<pre><code>pcs cluster auth belenus tanaris
+Username: hacluster</code></pre>
+<p>Configuramos el cluster (Belenus)</p>
+<pre><code>pcs cluster setup --name PCS-HAP-Kubernetes belenus tanaris</code></pre>
+<p>Podemos ver el estado actual con</p>
+<pre><code>[root@taranis external_loadbalancer_hap]# pcs status
+Cluster name: PCS-HAP-Kubernetes
+Last updated: Tue May 17 09:45:16 2016      Last change: Tue May 17 09:45:02 2016 by root via cibadmin on tanaris
+Stack: corosync
+Current DC: belenus (version 1.1.13-10.el7_2.2-44eb2dd) - partition with quorum
+2 nodes and 0 resources configured
+
+Online: [ belenus tanaris ]
+
+Full list of resources:
+
+
+PCSD Status:
+  belenus: Online
+  tanaris: Online
+
+Daemon Status:
+  corosync: active/enabled
+  pacemaker: active/enabled
+  pcsd: active/enabled</code></pre>
+<h4 id="configuración-de-recursos-en-pcs">Configuración de recursos en PCS</h4>
+<h6 id="cluster-ip-con-pcs-para-hap">Cluster IP con PCS para HAP</h6>
+<p>Añadimos un recurso cluster con la ip fija reservada a la vip.</p>
+<pre><code>pcs resource create ClusterIP ocf:heartbeat:IPaddr2 \
+ ip=10.0.0.38 cidr_netmask=24 op monitor interval=30s</code></pre>
+<p>Clonamos el recurso para que este en los dos nodos</p>
+<pre><code>    pcs resource clone ClusterIP \
+     globally-unique=true clone-max=2 clone-node-max=2</code></pre>
+<p>Configuracion de stickiness</p>
+<pre><code>pcs resource meta ClusterIP resource-stickiness=0</code></pre>
+<p>Comprobamos el recurso</p>
+<pre><code>[root@taranis external_loadbalancer_hap]# pcs resource show
+ Clone Set: ClusterIP-clone [ClusterIP] (unique)
+     ClusterIP:0    (ocf::heartbeat:IPaddr2):   Started belenus
+     ClusterIP:1    (ocf::heartbeat:IPaddr2):   Started tanaris</code></pre>
+<h6 id="cluster-con-recursos-de-los-balanceadores">Cluster con recursos de los balanceadores</h6>
+<p>Creamos los siguientes recursos para que pcs controle los balanceadores</p>
+<pre><code>pcs resource create HAProxy syst.html:haproxy master-max=2 --group kubernetes-loadbalancer
+pcs resource create HAPManager syst.html:hap_manager master-max=2 --group kubernetes-loadbalancer</code></pre>
+<p>Comprobamos el estado</p>
+<pre><code>[root@taranis external_loadbalancer_hap]# pcs resource show
+ Clone Set: ClusterIP-clone [ClusterIP] (unique)
+     ClusterIP:0    (ocf::heartbeat:IPaddr2):   Started belenus
+     ClusterIP:1    (ocf::heartbeat:IPaddr2):   Started tanaris
+ Resource Group: kubernetes-loadbalancer
+     HAProxy    (syst.html:haproxy):  Started belenus
+     HAPManager (syst.html:hap_manager):  Started belenus</code></pre>
+<p>Clonamos los recursos</p>
+<pre><code>    pcs resource clone kubernetes-loadbalancer
+
+Configuración de colocación
+
+    pcs constraint colocation add ClusterIP-clone with kubernetes-loadbalancer-clone</code></pre>
+<p>Resultado final</p>
+<pre><code>[root@taranis external_loadbalancer_hap]# pcs resource show
+ Clone Set: ClusterIP-clone [ClusterIP] (unique)
+     ClusterIP:0    (ocf::heartbeat:IPaddr2):   Started belenus
+     ClusterIP:1    (ocf::heartbeat:IPaddr2):   Started tanaris
+ Clone Set: kubernetes-loadbalancer-clone [kubernetes-loadbalancer]
+     Started: [ belenus tanaris ]</code></pre>
+<p>Podemos ver que funciona desde una de las maquinas de OpenStack con</p>
+<pre><code>curl 10.0.0.38:80/nginx-service/</code></pre>
+<h4 id="para-poder-acceder-desde-fuera-tendremos-que-relizar-una-asociación-con-una-ip-flotante-a-la-vip">Para poder acceder desde fuera tendremos que relizar una asociación con una IP flotante a la VIP</h4>
+<p>En primer lugar listamos las redes con neutron</p>
+<pre><code>(cli-openstack)debian-user@debian:~/Descargas$ neutron net-list
++--------------------------------------+--------------------------+--------------------------------------------------+
+| id                                   | name                     | subnets                                          |
++--------------------------------------+--------------------------+--------------------------------------------------+
+| 9734556d-XXXX-XXXX-XXXX-fdad435fff18 | red de juanmanuel.torres | 56693ca1-XXXX-XXXX-XXXX-ee8074bb13b1 10.0.0.0/24 |
+| a86fc437-XXXX-XXXX-XXXX-f37a7b05537f | ext-net                  | 3c8cdfb0-XXXX-XXXX-XXXX-c6c3e228b81c             |
++--------------------------------------+--------------------------+--------------------------------------------------+</code></pre>
+<p>Creamos un puerto para la ip de la subred que utilizaremos</p>
+<p><code>neutron port-create {net-id} --fixed-ip ip_address={ip}</code></p>
+<pre><code>neutron port-create 9734556d-XXXX-XXXX-XXXX-fdad435fff18 --fixed-ip ip_address=10.0.0.38</code></pre>
+<p>Podremos ver el resultado con</p>
+<pre><code>(cli-openstack)debian-user@debian:~/Descargas$ neutron port-list | grep 10.0.0.38
+2821603c-POPP-POPP-POPP-bd2349b29e63 | | fa:16:3e:94:a9:bd | {&quot;subnet_id&quot;:&quot;56693ca1-XXXX-XXXX-XXXX-ee8074bb13b1&quot;,&quot;ip_address&quot;:&quot;10.0.0.38&quot;}</code></pre>
+<p>Para poder asociar la IP flotante necesitaremos su id, para ello podemos listar las existentes con</p>
+<pre><code>(cli-openstack)debian-user@debian:~/Descargas$ neutron floatingip-list
++--------------------------------------+------------------+---------------------+--------------------------------------+
+| id                                   | fixed_ip_address | floating_ip_address | port_id                              |
++--------------------------------------+------------------+---------------------+--------------------------------------+
+| 03eeacd9-XXXX-XXXX-XXXX-71a1182ee838 |                  | 172.22.205.249      |                                      |
+| 0f36bd32-XXXX-XXXX-XXXX-e41867c5b8d4 | 10.0.0.50        | 172.22.205.246      | 0a10a744-XXXX-XXXX-XXXX-b8ecdcd8bac0 |
+| 1f8d124a-XXXX-XXXX-XXXX-101c148a348d | 10.0.0.44        | 172.22.205.241      | 8c306c2b-ZZZZ-ZZZZ-ZZZZ-b64bb5753e6f |
+| 2cc63597-XXXX-XXXX-XXXX-45e8e85034fa | 10.0.0.46        | 172.22.205.243      | 2f56c5a4-YYYY-YYYY-YYYY-541916af4b92 |
+| 61b53f55-XXXX-XXXX-XXXX-4ca9c90479d5 | 10.0.0.45        | 172.22.205.242      | 8b628bdc-VVVV-VVVV-VVVV-b1608f29624d |
+| 75619867-CCCC-CCCC-CCCC-2ac0907329ee | 10.0.0.48        | 172.22.205.244      | 469b1a30-XXXX-XXXX-XXXX-ba487da79e3f |
+| acd9ba03-RRRR-RRRR-RRRR-f535dcf0c769 | 10.0.0.43        | 172.22.205.240      | 40f6ad24-JJJJ-JJJJ-JJJJ-7be049772175 |
+| d6f96986-EEEE-EEEE-EEEE-563823df3216 |                  | 172.22.205.248      |                                      |
+| e4d55da9-WWWW-WWWW-WWWW-308d9b147b13 | 10.0.0.53        | 172.22.205.247      | 8da8d613-BBBB-BBBB-BBBB-96e89e31d8f5 |
+| ea9033b1-XXXX-XXXX-XXXX-6dc56a6b9cea | 10.0.0.52        | 172.22.205.245      | c219e492-NNNN-NNNN-NNNN-62ee771c5700 |
++--------------------------------------+------------------+---------------------+--------------------------------------+</code></pre>
+<p>Finalmente la asociamos con</p>
+<p><code>neutron floatingip-associate --fixed-ip-address {ip} {float-ip-uuid} {port-uuid}</code></p>
+<pre><code>neutron floatingip-associate --fixed-ip-address 10.0.0.38 d6f96986-EEEE-EEEE-EEEE-563823df3216 2821603c-POPP-POPP-POPP-bd2349b29e63
+
++--------------------------------------+------------------+---------------------+--------------------------------------+
+| id                                   | fixed_ip_address | floating_ip_address | port_id                              |
++--------------------------------------+------------------+---------------------+--------------------------------------+
+| 03eeacd9-XXXX-XXXX-XXXX-71a1182ee838 |                  | 172.22.205.249      |                                      |
+| 0f36bd32-XXXX-XXXX-XXXX-e41867c5b8d4 | 10.0.0.50        | 172.22.205.246      | 0a10a744-XXXX-XXXX-XXXX-b8ecdcd8bac0 |
+| 1f8d124a-XXXX-XXXX-XXXX-101c148a348d | 10.0.0.44        | 172.22.205.241      | 8c306c2b-ZZZZ-ZZZZ-ZZZZ-b64bb5753e6f |
+| 2cc63597-XXXX-XXXX-XXXX-45e8e85034fa | 10.0.0.46        | 172.22.205.243      | 2f56c5a4-YYYY-YYYY-YYYY-541916af4b92 |
+| 61b53f55-XXXX-XXXX-XXXX-4ca9c90479d5 | 10.0.0.45        | 172.22.205.242      | 8b628bdc-VVVV-VVVV-VVVV-b1608f29624d |
+| 75619867-CCCC-CCCC-CCCC-2ac0907329ee | 10.0.0.48        | 172.22.205.244      | 469b1a30-XXXX-XXXX-XXXX-ba487da79e3f |
+| acd9ba03-RRRR-RRRR-RRRR-f535dcf0c769 | 10.0.0.43        | 172.22.205.240      | 40f6ad24-JJJJ-JJJJ-JJJJ-7be049772175 |
+| d6f96986-EEEE-EEEE-EEEE-563823df3216 | 10.0.0.38        | 172.22.205.248      | 2821603c-POPP-POPP-POPP-bd2349b29e63 |
+| e4d55da9-WWWW-WWWW-WWWW-308d9b147b13 | 10.0.0.53        | 172.22.205.247      | 8da8d613-BBBB-BBBB-BBBB-96e89e31d8f5 |
+| ea9033b1-XXXX-XXXX-XXXX-6dc56a6b9cea | 10.0.0.52        | 172.22.205.245      | c219e492-NNNN-NNNN-NNNN-62ee771c5700 |
++--------------------------------------+------------------+---------------------+--------------------------------------+</code></pre>
+<p>Para terminar de desplegar configuramos los nodos con <a href="6-Almacenamiento.html#glusterfs">GlusterFS</a></p>
+<h2 id="exponer-servicios-con-ingress">Exponer servicios con Ingress</h2>
+<p><a href="http://kubernetes.io/docs/user-guide/ingress/#what-is-ingress">Fuente k-user-guide</a> <a href="https://github.com/kubernetes/contrib/tree/master/ingress">GitHub Ingress</a> <a href="https://github.com/kubernetes/contrib/tree/master/ingress/controllers/gce">GitHub GCE</a></p>
+<p><code>kubectl create -f rc.yaml --namespace=kube-system</code></p>
+<pre><code>You have exposed your service on an external port on all nodes in your
+cluster.  If you want to expose this service to the external internet, you may
+need to set up firewall rules for the service port(s) (tcp:31959) to serve traffic.
+
+See http://releases.k8s.io/HEAD/docs/user-guide/services-firewalls.html for more details.
+service &quot;default-http-backend&quot; created
+replicationcontroller &quot;l7-lb-controller&quot; created</code></pre>
+<p>Podemos ver el pod con</p>
+<pre><code>kubectl get pods -o wide --all-namespaces</code></pre>
+<h2 id="loadbalancer-haproxy-interno">LoadBalancer HAProxy interno</h2>
+<p><a href="https://github.com/kubernetes/contrib/tree/master/service-loadbalancer">Fuente GitHub</a> <a href="https://github.com/coreos/bootkube/tree/9d019a6729601003f48294b71ee6d96dfc4d32ce/vendor/k8s.io/kubernetes/test/e2e/testing-manifests/serviceloadbalancer">CoreOS GitHub</a> <a href="https://www.nginx.com/blog/load-balancing-kubernetes-services-nginx-plus/">Nginx-Plus</a></p>
+<p>Creamos el balanceador de carga, este no se iniciara por que espera que definamos los nodos</p>
+<p><code>kubectl create -f ./rc.yaml</code></p>
+<pre><code>apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: service-loadbalancer
+  labels:
+    app: service-loadbalancer
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    app: service-loadbalancer
+    version: v1
+  template:
+    metadata:
+      labels:
+        app: service-loadbalancer
+        version: v1
+    spec:
+      nodeSelector:
+        role: loadbalancer
+      containers:
+      - image: gcr.io/google_containers/servicelb:0.4
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        name: haproxy
+        ports:
+        # All http services
+        - containerPort: 80
+          hostPort: 80
+          protocol: TCP
+        # nginx https
+        - containerPort: 443
+          hostPort: 8080
+          protocol: TCP
+        # mysql
+        - containerPort: 3306
+          hostPort: 3306
+          protocol: TCP
+        # haproxy stats
+        - containerPort: 1936
+          hostPort: 1936
+          protocol: TCP
+        resources: {}
+        args:
+        - --tcp-services=mysql:3306,nginxsvc:80
+        - --server=10.0.0.39:8080</code></pre>
+<p>Definimos los nodos que usara como loadbalancer</p>
+<pre><code>kubectl label node artio role=loadbalancer</code></pre>
+<p>Resultado</p>
+<pre><code>[root@morrigan centos]# kubectl get nodes
+NAME      LABELS                                           STATUS    AGE
+artio     kubernetes.io/hostname=artio,role=loadbalancer   Ready     2m</code></pre>
+<p>Podemos tener el siguiente error dentro del pod</p>
+<pre><code>Failed to create client: open /var/run/secrets/kubernetes.io/serviceaccount/token: permission denied</code></pre>
+<p>Este problema lo causa SeLinux en los minions, podemos desactivarlo o realizar los siguiente</p>
+<pre><code>chcon -Rt svirt_sandbox_file_t /var/lib/kubelet</code></pre>
+<p>Podemos ventrar en el pod desde el minion donde se ejecuta</p>
+<pre><code>docker exec -i -t $(docker ps | grep gcr.io/google_containers/servicelb:0.4 | awk &#39;{ print $1 }&#39; | sed q) bash</code></pre>
+<hr />
+<p><a href="4-Addons.html">Anterior</a> | <a href="6-Almacenamiento.html">Siguiente</a></p>
+</body>
+</html>
