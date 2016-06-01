@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
+</head>
+<body>
+<p><a href="index.html">Index</a> - <a href="2-Kube_simple.html">Siguiente</a></p>
+<hr />
+<h1 id="kubernetes-ha-sobre-openstack">Kubernetes HA sobre OpenStack</h1>
+<p>Proyecto Celtic Kubernetes de fin de ciclo de ASIR (sysadmin) IES Gonzalo Nazareno (Dos Hermanas, España)</p>
+<ul>
+<li><a href="Contacto.html">Contacto</a></li>
+</ul>
+<p>El escenario tiene sus nombres tomados de los dioses Celtas de la siguiente entrada de la Wikipedia <a href="https://es.wikipedia.org/wiki/Categor%C3%ADa:Dioses_celtas">enlace</a> donde podrás consultar su descripción.</p>
+<h2 id="índice-de-contenido">Índice de contenido</h2>
+<hr />
+<ol style="list-style-type: decimal">
+<li><a href="index.html">Portada proyecto</a></li>
+<li><a href="2-Kube_simple.html">Despliegue simple Kubernetes</a></li>
+<li><a href="3-Kube_HA_pcs.html">Despliegue Kubernetes cluster en HA masters y minions</a></li>
+<li><a href="4-Addons.html">Addons para Kubernetes</a></li>
+<li><a href="5-Exponer_svc.html">Exponer servicios internos de Kubernetes</a></li>
+<li><a href="6-Almacenamiento.html">Almacenamiento persistente para Kubernetes</a></li>
+<li><a href="7-Explotando_kubernetes.html">Explotando Kubernetes</a></li>
+<li><a href="8-Kubernetes_ansible.html">Kubernetes con Ansible</a></li>
+</ol>
+<h4 id="los-nombres-elegidos-son">Los nombres elegidos son</h4>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Nombre</th>
+<th align="left">Función</th>
+<th align="left">Numero</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><a href="https://es.wikipedia.org/wiki/Taranis"><strong>Taranis</strong></a></td>
+<td align="left">Proxy</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="https://es.wikipedia.org/wiki/Belenus"><strong>Belenus</strong></a></td>
+<td align="left">Proxy</td>
+<td align="left">2</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="https://es.wikipedia.org/wiki/Morrigan"><strong>Morrigan</strong></a></td>
+<td align="left">KMaster</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="https://es.wikipedia.org/wiki/Balar"><strong>Balar</strong></a></td>
+<td align="left">KMaster</td>
+<td align="left">2</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="https://es.wikipedia.org/wiki/Artio"><strong>Artio</strong></a></td>
+<td align="left">KMinion</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="https://es.wikipedia.org/wiki/Esus"><strong>Esus</strong></a></td>
+<td align="left">KMinion</td>
+<td align="left">2</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="https://es.wikipedia.org/wiki/Angus_(mitología)"><strong>Angus</strong></a></td>
+<td align="left">Almacenamiento</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="https://es.wikipedia.org/wiki/Dagda"><strong>Dagda</strong></a></td>
+<td align="left">Almacenamiento</td>
+<td align="left">2</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="definiendo-kubernetes">Definiendo Kubernetes</h2>
+<p><a href="https://goreportcard.com/report/k8s.io/kubernetes"><img src="https://goreportcard.com/badge/k8s.io/kubernetes" alt="GoReportCard Widget" /></a> <a href="https://godoc.org/k8s.io/kubernetes"><img src="https://godoc.org/k8s.io/kubernetes?status.svg" alt="GoDoc Widget" /></a> <a href="https://travis-ci.org/kubernetes/kubernetes"><img src="https://travis-ci.org/kubernetes/kubernetes.svg?branch=master" alt="Travis Widget" /></a> <a href="https://coveralls.io/r/kubernetes/kubernetes"><img src="https://coveralls.io/repos/kubernetes/kubernetes/badge.svg" alt="Coverage Status Widget" /></a></p>
+<hr>
+
+<p>Kubernetes es un orquestador de <a href="https://github.com/kubernetes/kubernetes/wiki/Why-Kubernetes%3F#why-containers">contenedores</a> open source a través de múltiples hosts, proporcionar mecanismos básicos para el despliegue, mantenimiento y escalado de aplicaciones.</p>
+<p>Kubernetes es:</p>
+<ul>
+<li><strong>liviano</strong>: ligero, sencillo, accesible</li>
+<li><strong>portable</strong>: publico, privado, hibrido, multi cloud</li>
+<li><strong>extensible</strong>: modular</li>
+<li><strong>Autonomo</strong>: gestion de contenedores de forma autonoma</li>
+</ul>
+<p>Kubernetes se basa en una <a href="https://research.google.com/pubs/pub43438.html">década y media de experiencia en Google para ejecutar cargas de trabajo de producción</a>, combinado con las ideas y las mejores prácticas de la comunidad.</p>
+<hr>
+
+<h2 id="conceptos">Conceptos</h2>
+<p>Kubernetes trabaja con los siguientes conceptos:</p>
+<p><a href="https://github.com/kubernetes/kubernetes/blob/master/docs/admin/README.html"><strong>Cluster</strong></a> Un cluster es un conjunto de máquinas virtuales o físicas de infraestructura y otros recursos utilizados por Kubernetes para ejecutar los contenedores.</p>
+<p><a href="https://github.com/kubernetes/kubernetes/blob/master/docs/admin/node.html"><strong>Node</strong></a> Un nodo es un equipo físico o virtual con Kubernetes, en la que las pods pueden ejecutarse.</p>
+<p><a href="https://github.com/kubernetes/kubernetes/blob/master/docs/user-guide/pods.html"><strong>Pod</strong></a> Los pods son un grupo contenedores de aplicaciones con volúmenes compartidos. Son las unidades de despliegue más pequeñas que se pueden crear, programadas y gestionadas con Kubernetes. Los pods se pueden crear de forma individual, pero se recomienda que utilice un controlador de replica incluso si la creación es de un sola pod.</p>
+<p><a href="docs/user-guide/replication-controller.html"><strong>Replication controller</strong></a> Los controladores de replicación gestionar el ciclo de vida de los pods. Se aseguran de que un determinado número de pods están ejecutando en cualquier momento dado, creando o matando los pods que se definan.</p>
+<p><a href="https://github.com/kubernetes/kubernetes/blob/master/docs/user-guide/services.html"><strong>Service</strong></a> Los servicios proporcionan un unico, nombre estable y dirección para un conjunto de pods. Ellos actúan como balanceadores de carga entre los pods del servicio.</p>
+<p><a href="https://github.com/kubernetes/kubernetes/blob/master/docs/user-guide/labels.html"><strong>Label</strong></a> Las etiquetas se utilizan para organizar y seleccionar grupos de objetos en función de clave: valor.</p>
+</body>
+</html>
