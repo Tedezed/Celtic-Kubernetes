@@ -1,0 +1,537 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
+</head>
+<body>
+<p><a href="1-Portada.html">Index</a> - <a href="2-Kube_simple.html">Anterior</a> | <a href="4-Addons.html">Siguiente</a></p>
+<hr />
+<h1 id="cluster-kubernetes-ha-2-masters-y-2-minions">Cluster Kubernetes HA (2 masters y 2 minions)</h1>
+<p><a href="http://www.colliernotes.com/2015/07/configure-highly-available-kubernetes.html">Inspirado en Colliernotes</a></p>
+<div id='indice'/>
+
+<h2 id="contenidos"><a href="#indice">Contenidos</a></h2>
+<ol style="list-style-type: decimal">
+<li><a href="#escenario">Escenario</a></li>
+<li><a href="#previo">Configuración previa</a></li>
+<li><a href="#instalacion">Instalación</a></li>
+<li><a href="#configuracion">Configuración</a>
+<ul>
+<li><a href="#conf-etcd">Configuración de Etcd</a></li>
+<li><a href="#conf-flannel">Configuración de Flannel</a></li>
+<li><a href="#conf-apiserver">Configuración de APIServer</a></li>
+<li><a href="#conf-pcs">Configuración de PCS</a>
+<ul>
+<li><a href="#conf-pcs-resources">Configuración de recursos</a>
+<ul>
+<li><a href="#conf-pcs-ip">Configuración de Cluster IP</a></li>
+<li><a href="#conf-pcs-kubernetes">Configuración de recursos de Kubernetes</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><a href="#ajustes-finales">Ajustes finales</a></li>
+<li><a href="#pruebas">Pruebas de funcionamiento</a></li>
+</ol>
+<div id='escenario'/>
+
+<h2 id="escenario">Escenario</h2>
+<h3 id="infraestructura-kubernetes-ha">Infraestructura Kubernetes HA</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Nombre</th>
+<th align="left">Función</th>
+<th align="left">Numero</th>
+<th align="left">IP externa</th>
+<th align="left">IP interna</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>Taranis</strong></td>
+<td align="left">Proxy</td>
+<td align="left">1</td>
+<td align="left">172.22.205.244</td>
+<td align="left">10.0.0.48</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Belenus</strong></td>
+<td align="left">Proxy</td>
+<td align="left">2</td>
+<td align="left">172.22.205.247</td>
+<td align="left">10.0.0.53</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>Morrigan</strong></td>
+<td align="left">KMaster</td>
+<td align="left">1</td>
+<td align="left">172.22.205.240</td>
+<td align="left">10.0.0.43</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Balar</strong></td>
+<td align="left">KMaster</td>
+<td align="left">2</td>
+<td align="left">172.22.205.241</td>
+<td align="left">10.0.0.44</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>Artio</strong></td>
+<td align="left">KMinion</td>
+<td align="left">1</td>
+<td align="left">172.22.205.242</td>
+<td align="left">10.0.0.45</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Esus</strong></td>
+<td align="left">KMinion</td>
+<td align="left">2</td>
+<td align="left">172.22.205.243</td>
+<td align="left">10.0.0.46</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>Angus</strong></td>
+<td align="left">Almacenamiento</td>
+<td align="left">1</td>
+<td align="left">172.22.205.245</td>
+<td align="left">10.0.0.52</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>Dagda</strong></td>
+<td align="left">Almacenamiento</td>
+<td align="left">2</td>
+<td align="left">172.22.205.246</td>
+<td align="left">10.0.0.50</td>
+</tr>
+</tbody>
+</table>
+<h3 id="vip-con-clusterip">VIP con CLusterIP</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left">IP subnet (VIP)</th>
+<th align="left">IP Flotante</th>
+<th align="left">Servicio</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">10.0.0.38</td>
+<td align="left">172.22.205.248</td>
+<td align="left">Entrada a HAProxy dinamico</td>
+</tr>
+<tr class="even">
+<td align="left">10.0.0.39</td>
+<td align="left">172.22.205.249</td>
+<td align="left">API Kubernetes masters</td>
+</tr>
+</tbody>
+</table>
+<h2 id="esquema-de-funcionamiento">Esquema de funcionamiento</h2>
+<div class="figure">
+<img src="Imagenes/topo2.jpg" alt="HA" /><p class="caption">HA</p>
+</div>
+<div id='previo'/>
+
+<h2 id="configuración-previa">Configuración previa</h2>
+<h5 id="configuración-de-nombres">Configuración de nombres</h5>
+<pre><code>echo &quot;# Celtas Kubernetes
+10.0.0.43 morrigan
+10.0.0.44 balar
+10.0.0.45 artio
+10.0.0.46 esus
+10.0.0.52 angus
+10.0.0.50 dagda
+10.0.0.48 tanaris
+10.0.0.53 belenus&quot; &gt;&gt; /etc/hosts</code></pre>
+<h5 id="repositorios-masters-y-minions">Repositorios (Masters y minions)</h5>
+<pre><code>sudo yum install epel-release
+
+echo &quot;[virt7-docker-common-release]
+name=virt7-docker-common-release
+baseurl=http://cbs.centos.org/repos/virt7-docker-common-release/x86_64/os/
+gpgcheck=0&quot; &gt; /etc/yum.repos.d/virt7-docker-common-release.repo</code></pre>
+<h5 id="ntp-para-los-nodos-master">NTP para los nodos master</h5>
+<p>Instalación</p>
+<pre><code>yum install ntp ntpdate ntp-doc</code></pre>
+<p>Configuración</p>
+<pre><code>chkconfig ntpd on
+
+ntpdate pool.ntp.org</code></pre>
+<p>Editamos <code>/etc/ntp.conf</code></p>
+<pre><code>server 0.centos.pool.ntp.org iburst
+server 1.centos.pool.ntp.org iburst
+server 2.centos.pool.ntp.org iburst
+server 3.centos.pool.ntp.org iburst
+server 0.rhel.pool.ntp.org
+server 1.rhel.pool.ntp.org
+server 2.rhel.pool.ntp.org</code></pre>
+<p>Reiniciamos ntp</p>
+<pre><code>systemctl restart ntpd</code></pre>
+<div id='instalacion'/>
+
+<h2 id="instalación">Instalación</h2>
+<ul>
+<li><p>Masters</p>
+<pre><code>yum -y install etcd kubernetes-master pcs fence-agents-all</code></pre></li>
+<li><p>Minions</p>
+<pre><code>yum -y install kubernetes-node docker flannel</code></pre></li>
+</ul>
+<p>Versión instalada</p>
+<pre><code>[root@morrigan]# yum list installed | grep kube
+kubernetes-client.x86_64               1.2.0-0.9.alpha1.gitb57e8bd.el7 @extras  
+kubernetes-master.x86_64               1.2.0-0.9.alpha1.gitb57e8bd.el7 @extras</code></pre>
+<div id='configuracion'/>
+
+<h2 id="configuración">Configuración</h2>
+<p>Componentes que vamos a configurar a continuación:</p>
+<ul>
+<li>Etcd</li>
+<li>Flannel</li>
+<li>Apiserver</li>
+</ul>
+<div id='conf-etcd'/>
+
+<h4 id="configuración-de-etcd">Configuración de etcd</h4>
+<p>Cambios en <code>/etc/etcd/etcd.conf</code></p>
+<ul>
+<li><p>Morrigan</p>
+<pre><code>ETCD_NAME=etcd0
+ETCD_LISTEN_PEER_URLS=&quot;http://0.0.0.0:2380&quot;
+ETCD_LISTEN_CLIENT_URLS=&quot;http://0.0.0.0:2379,http://0.0.0.0:4001&quot;
+ETCD_INITIAL_ADVERTISE_PEER_URLS=&quot;http://10.0.0.43:2380&quot;
+ETCD_INITIAL_CLUSTER=&quot;etcd0=http://10.0.0.43:2380,etcd1=http://10.0.0.44:2380&quot;
+ETCD_INITIAL_CLUSTER_STATE=&quot;new&quot;
+ETCD_INITIAL_CLUSTER_TOKEN=&quot;etcd-cluster&quot;
+ETCD_ADVERTISE_CLIENT_URLS=&quot;http://10.0.0.43:2379&quot;</code></pre></li>
+<li><p>Balar</p>
+<pre><code>ETCD_NAME=etcd1
+ETCD_LISTEN_PEER_URLS=&quot;http://0.0.0.0:2380&quot;
+ETCD_LISTEN_CLIENT_URLS=&quot;http://0.0.0.0:2379,http://0.0.0.0:4001&quot;
+ETCD_INITIAL_ADVERTISE_PEER_URLS=&quot;http://10.0.0.44:2380&quot;
+ETCD_INITIAL_CLUSTER=&quot;etcd0=http://10.0.0.43:2380,etcd1=http://10.0.0.44:2380&quot;
+ETCD_INITIAL_CLUSTER_STATE=&quot;new&quot;
+ETCD_INITIAL_CLUSTER_TOKEN=&quot;etcd-cluster&quot;
+ETCD_ADVERTISE_CLIENT_URLS=&quot;http://10.0.0.44:2379&quot;</code></pre></li>
+</ul>
+<p>Habilitamos etcd y lo arrancamos (Masters)</p>
+<pre><code>systemctl enable etcd; systemctl start etcd; systemctl status etcd</code></pre>
+<ul>
+<li><p>Podemos ver el estado del cluster etcd con:</p>
+<pre><code>[root@morrigan ~]# etcdctl cluster-health; etcdctl member list
+member 3a1e52dab64d52d1 is healthy: got healthy result from http://10.0.0.44:2379
+member 615bbac592673ecc is healthy: got healthy result from http://10.0.0.43:2379
+cluster is healthy
+3a1e52dab64d52d1: name=etcd1 peerURLs=http://10.0.0.44:2380 clientURLs=http://10.0.0.44:2379
+615bbac592673ecc: name=etcd0 peerURLs=http://10.0.0.43:2380 clientURLs=http://10.0.0.43:2379</code></pre></li>
+</ul>
+<div id='conf-flannel'/>
+
+<h4 id="configuración-de-red-flannel">Configuración de red Flannel</h4>
+<p>Definimos la red flannel para el cluster (Morrigan)</p>
+<pre><code>etcdctl mk /atomic.io/network/config &#39;{&quot;Network&quot;:&quot;10.80.0.0/16&quot;}&#39;</code></pre>
+<p>Definimos la red de flannel (Minions) <code>/etc/sysconfig/flanneld</code></p>
+<pre><code>FLANNEL_ETCD=&quot;http://10.0.0.43:2379,http://10.0.0.44:2379&quot;</code></pre>
+<p>Habilitamos y arrancamos Flanneld y Docker (Minions)</p>
+<pre><code>systemctl enable flanneld; systemctl restart flanneld; systemctl status flanneld
+systemctl enable docker; systemctl restart docker; systemctl status docker</code></pre>
+<div id='conf-apiserver'/>
+
+<h4 id="configuración-de-kubernetes-apiserver">Configuración de Kubernetes Apiserver</h4>
+<ul>
+<li><p>Masters - Editamos <code>/etc/kubernetes/apiserver</code></p>
+<pre><code>KUBE_API_ADDRESS=&quot;--address=0.0.0.0&quot;
+KUBE_API_PORT=&quot;--port=8080&quot;
+KUBELET_PORT=&quot;--kubelet_port=10250&quot;
+KUBE_ETCD_SERVERS=&quot;--etcd_servers=http://10.0.0.43:2379,http://10.0.0.44:2379&quot;
+KUBE_SERVICE_ADDRESSES=&quot;--service-cluster-ip-range=10.254.0.0/16&quot;
+KUBE_ADMISSION_CONTROL=&quot;--admission_control=NamespaceLifecycle,NamespaceExists,LimitRanger,SecurityContextDeny,ResourceQuota&quot;
+KUBE_API_ARGS=&quot;&quot;</code></pre></li>
+<li><p>Minions</p>
+<ul>
+<li><p>Editamos <code>/etc/kubernetes/config</code></p>
+<pre><code>KUBE_MASTER=&quot;--master=http://10.0.0.39:8080&quot;
+KUBE_ALLOW_PRIV=&quot;--allow-privileged=true&quot;</code></pre></li>
+<li><p>Editamos <code>/etc/kubernetes/kubelet</code></p>
+<ul>
+<li><p>Artio</p>
+<pre><code>KUBELET_ADDRESS=&quot;--address=0.0.0.0&quot;
+KUBELET_PORT=&quot;--port=10250&quot;
+# KUBELET_HOSTNAME=&quot;--hostname_override=IP_MINION&quot;
+#KUBELET_HOSTNAME=&quot;--hostname_override=10.0.0.45&quot;
+KUBELET_HOSTNAME=&quot;--hostname-override=artio&quot;
+KUBELET_API_SERVER=&quot;--api-servers=http://10.0.0.39:8080&quot;
+KUBELET_ARGS=&quot;--register-node=true&quot;</code></pre></li>
+<li><p>Esus</p>
+<pre><code>KUBELET_ADDRESS=&quot;--address=0.0.0.0&quot;
+KUBELET_PORT=&quot;--port=10250&quot;
+#KUBELET_HOSTNAME=&quot;--hostname_override=10.0.0.46&quot;
+KUBELET_HOSTNAME=&quot;--hostname-override=esus&quot;
+KUBELET_API_SERVER=&quot;--api-servers=http://10.0.0.39:8080&quot;
+KUBELET_ARGS=&quot;--register-node=true&quot;</code></pre></li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="ajuste-de-unidades">Ajuste de unidades</h4>
+<ul>
+<li><p>Minions</p>
+<pre><code>systemctl restart kube-proxy; systemctl enable kube-proxy; systemctl restart kubelet; systemctl enable kubelet; systemctl restart docker; systemctl enable docker; systemctl restart flanneld; systemctl enable flanneld</code></pre></li>
+</ul>
+<div id='conf-pcs'/>
+
+<h4 id="configuración-pcs">Configuración PCS</h4>
+<p>Habilitamos y arrancamos pcs (Masters)</p>
+<pre><code>systemctl restart pcsd.service; systemctl enable pcsd.service</code></pre>
+<p>Cambiamos la contraseña a hacluster (Masters)</p>
+<pre><code>passwd hacluster</code></pre>
+<p>Autorizamos los nodos (Morrigan)</p>
+<pre><code>pcs cluster auth morrigan balar
+Username: hacluster</code></pre>
+<p>Configuramos el cluster (Morrigan)</p>
+<pre><code>pcs cluster setup --name PCS-HA-Kubernetes morrigan balar</code></pre>
+<p>Iniciamos el cluster y lo habilitamos</p>
+<pre><code>pcs cluster start --all
+pcs cluster enable --all</code></pre>
+<p>Deshabilitamos</p>
+<pre><code>pcs property set stonith-enabled=false</code></pre>
+<p>Ignorar Quorum</p>
+<pre><code>pcs property set no-quorum-policy=ignore</code></pre>
+<p>Podemos ver el estado actual con</p>
+<pre><code>[root@morrigan centos]# pcs status
+Cluster name: PCS-HA-Kubernetes
+Last updated: Tue Apr 26 09:22:29 1993      Last change: Tue Apr 26 09:22:26 1993 by root via cibadmin on morrigan
+Stack: corosync
+Current DC: balar (version 1.1.13-10.el7_2.2-44eb2dd) - partition with quorum
+2 nodes and 0 resources configured
+
+Online: [ balar morrigan ]
+
+Full list of resources:
+
+
+PCSD Status:
+    morrigan: Online
+    balar: Online
+
+Daemon Status:
+    corosync: active/enabled
+    pacemaker: active/enabled
+    pcsd: active/enabled</code></pre>
+<div id='conf-pcs-resources'/>
+
+<h5 id="configuración-de-recursos-en-pcs">Configuración de recursos en PCS</h5>
+<div id='conf-pcs-ip'/>
+
+<h6 id="cluster-ip-con-pcs">Cluster IP con PCS</h6>
+<p>Añadimos un recurso cluster con la ip fija reservada a la vip.</p>
+<pre><code>pcs resource create ClusterIP ocf:heartbeat:IPaddr2 \
+ ip=10.0.0.39 cidr_netmask=24 op monitor interval=30s</code></pre>
+<p>Clonamos el recurso para que este en los dos nodos</p>
+<pre><code>    pcs resource clone ClusterIP \
+     globally-unique=true clone-max=2 clone-node-max=2</code></pre>
+<p>Comprobamos el recurso</p>
+<pre><code>[root@morrigan centos]# pcs resource show
+Clone Set: ClusterIP-clone [ClusterIP] (unique)
+ ClusterIP:0    (ocf::heartbeat:IPaddr2):   Started balar
+ ClusterIP:1    (ocf::heartbeat:IPaddr2):   Started morrigan</code></pre>
+<div id='conf-pcs-kubernetes'/>
+
+<h6 id="cluster-con-recursos-de-kubernetes">Cluster con recursos de Kubernetes</h6>
+<p>Creamos los siguientes recursos para que pcs controle Kubernetes</p>
+<pre><code>pcs resource create APIServer syst.html:kube-apiserver master-max=2 --group kubernetes-master
+pcs resource create Scheduler syst.html:kube-scheduler master-max=2 --group kubernetes-master
+pcs resource create Controller syst.html:kube-controller-manager master-max=2 --group kubernetes-master</code></pre>
+<p>Comprobamos el estado</p>
+<pre><code>[root@morrigan centos]# pcs resource show
+ Resource Group: kubernetes-master
+    APIServer   (syst.html:kube-apiserver):   Started balar
+    Scheduler   (syst.html:kube-scheduler):   Started balar
+    Controller  (syst.html:kube-controller-manager):  Started balar</code></pre>
+<p>Podemos clonar los recursos de dos formas diferentes, recomiendo el modo 2</p>
+<ul>
+<li><p>Modo 1 por recurso</p>
+<pre><code>pcs resource clone ClusterIP \
+ globally-unique=true clone-max=2 clone-node-max=2
+pcs resource clone APIServer --group master
+pcs resource clone Scheduler --group master
+pcs resource clone Controller --group master</code></pre></li>
+<li><p>Modo 2 por grupo</p>
+<pre><code>pcs resource clone kubernetes-master</code></pre>
+<p>Configuración de colocación</p>
+<pre><code>pcs constraint colocation add ClusterIP-clone with kubernetes-master-clone</code></pre></li>
+</ul>
+<p>Comprobamos los recursos</p>
+<ul>
+<li><p>Modo 1</p>
+<pre><code>[root@morrigan centos]# pcs resource show
+ Clone Set: ClusterIP-clone [ClusterIP] (unique)
+     ClusterIP:0    (ocf::heartbeat:IPaddr2):   Started balar
+     ClusterIP:1    (ocf::heartbeat:IPaddr2):   Started morrigan
+ Clone Set: APIServer-clone [APIServer]
+     Started: [ balar morrigan ]
+ Clone Set: Scheduler-clone [Scheduler]
+     Started: [ balar morrigan ]
+ Clone Set: Controller-clone [Controller]
+     Started: [ balar morrigan ]</code></pre></li>
+<li><p>Modo 2</p>
+<pre><code> Clone Set: ClusterIP-clone [ClusterIP] (unique)
+     ClusterIP:0        (ocf::heartbeat:IPaddr2):   Started balar
+     ClusterIP:1        (ocf::heartbeat:IPaddr2):   Started morrigan
+ Clone Set: kubernetes-master-clone [kubernetes-master]
+     Started: [ balar morrigan ]</code></pre></li>
+</ul>
+<div id='ajustes-finales'/>
+
+<h2 id="ajustes-finales">Ajustes finales</h2>
+<h4 id="ajustes-de-kubectl">Ajustes de Kubectl</h4>
+<p>Si ejecutamos el siguiente comando el los nodos del cluster, podemos observar que nos responde con los minions de Kubernetes</p>
+<pre><code>kubectl get nodes</code></pre>
+<p>Respuesta</p>
+<pre><code>NAME      LABELS                         STATUS    AGE
+artio     kubernetes.io/hostname=artio   Ready     18h
+esus      kubernetes.io/hostname=esus    Ready     18h</code></pre>
+<p>Sin embarco en los minions este comando nos pasara el siguiente error</p>
+<pre><code>The connection to the server localhost:8080 was refused - did you specify the right host or port?</code></pre>
+<p>Para poder acceder desde los minions podemos ejecutar el comando de la siguiente forma</p>
+<ol style="list-style-type: decimal">
+<li><p>Con la IP del cluster</p>
+<pre><code>kubectl -s http://10.0.0.39:8080 get nodes </code></pre></li>
+<li><p>Definiendo el cluster</p>
+<pre><code>kubectl config set-cluster test-cluster --server=http://10.0.0.39:8080
+kubectl config set-context test-cluster --cluster=test-cluster
+kubectl config use-context test-cluster</code></pre></li>
+</ol>
+<h4 id="ajustes-de-clusterip">Ajustes de ClusterIP</h4>
+<p>Colocación de ClusterIP: <a href="http://clusterlabs.org/doc/en-US/Pacemaker/1.1/html/Clusters_from_Scratch/_test_failover.html">Test Failover</a> Cuando uno de los nodos falla y vuelve a levantarse el recurso ClusterIP permanece en en nodo que no se fallo por lo que no esta balanceado. Solo modo 2.</p>
+<pre><code>Online: [ balar morrigan ]
+
+Full list of resources:
+
+ Clone Set: ClusterIP-clone [ClusterIP] (unique)
+     ClusterIP:0    (ocf::heartbeat:IPaddr2):   Started morrigan
+     ClusterIP:1    (ocf::heartbeat:IPaddr2):   Started morrigan
+ Clone Set: APIServer-clone [APIServer]
+     Started: [ balar morrigan ]
+ Clone Set: Scheduler-clone [Scheduler]
+     Started: [ balar morrigan ]
+ Clone Set: Controller-clone [Controller]
+     Started: [ balar morrigan ]</code></pre>
+<p>Para que el recurso vuelva a los dos nodos para estar balanceado, desactivamos: stickiness.</p>
+<pre><code>pcs resource meta ClusterIP resource-stickiness=0</code></pre>
+<p>El resultado sera el siguiente</p>
+<pre><code>Online: [ balar morrigan ]
+
+Full list of resources:
+
+ Clone Set: ClusterIP-clone [ClusterIP] (unique)
+     ClusterIP:0    (ocf::heartbeat:IPaddr2):   Started morrigan
+     ClusterIP:1    (ocf::heartbeat:IPaddr2):   Started balar
+ Clone Set: APIServer-clone [APIServer]
+     Started: [ balar morrigan ]
+ Clone Set: Scheduler-clone [Scheduler]
+     Started: [ balar morrigan ]
+ Clone Set: Controller-clone [Controller]
+     Started: [ balar morrigan ]</code></pre>
+<h4 id="solución-de-errores-adicionales">Solución de errores adicionales</h4>
+<p><strong>ERROR:</strong> <em>No API token found for service account default/default, retry after the token is automatically created and added to the service account</em></p>
+<ul>
+<li>Este error los puedes ver cuando vas a crear un pod directamente o cuando un rc no tiene pods.</li>
+</ul>
+<p>Reportado en:</p>
+<pre><code>  https://github.com/kubernetes/kubernetes/issues/11355#issuecomment-127378691
+  http://stackoverflow.com/questions/31891734/not-able-to-create-pod-in-kubernetes</code></pre>
+<p><strong>SOLUCION:</strong></p>
+<p>Generamos serviceaccount en Morrigan</p>
+<pre><code>openssl genrsa -out /tmp/serviceaccount.key 2048</code></pre>
+<p>Copiamos la clave privada a Balar</p>
+<pre><code>scp /tmp/serviceaccount.key  root@balar:/tmp/serviceaccount.key</code></pre>
+<p>Configuración en ambos nodos:</p>
+<p><code>nano /etc/kubernetes/apiserver</code></p>
+<pre><code>KUBE_API_ARGS=&quot;--service_account_key_file=/tmp/serviceaccount.key&quot;</code></pre>
+<p><code>nano /etc/kubernetes/controller-manager</code></p>
+<pre><code>KUBE_CONTROLLER_MANAGER_ARGS=&quot;--service_account_private_key_file=/tmp/serviceaccount.key&quot;</code></pre>
+<div id='pruebas'/>
+
+<h2 id="pruebas-de-funcionamiento">Pruebas de funcionamiento</h2>
+<p>En primer lugar ponemos en standby todos los nodos del cluster, los resultados de las pruebas son sobre el modo 1 de clonación ya que da mas información de los recursos. El modo recomendado a usar es el modo 2.</p>
+<pre><code>pcs cluster standby --all</code></pre>
+<p>Los nodos del cluster quedaran de la siguiente forma</p>
+<pre><code>Node balar: standby
+Node morrigan: standby
+
+Full list of resources:
+
+ Clone Set: ClusterIP-clone [ClusterIP] (unique)
+     ClusterIP:0    (ocf::heartbeat:IPaddr2):   Stopped
+     ClusterIP:1    (ocf::heartbeat:IPaddr2):   Stopped
+ Clone Set: APIServer-clone [APIServer]
+     Stopped: [ balar morrigan ]
+ Clone Set: Scheduler-clone [Scheduler]
+     Stopped: [ balar morrigan ]
+ Clone Set: Controller-clone [Controller]
+     Stopped: [ balar morrigan ]</code></pre>
+<p>En segundo lugar vamos sacando los nodos de stadby para comprobar su correcto funcionamiento. Activamos Morrigan y dejamos en standby Bañar.</p>
+<pre><code>pcs cluster unstandby morrigan</code></pre>
+<p>Los recursos con Morrigan activo quedaran de la siguiente forma</p>
+<pre><code>Node balar: standby
+Online: [ morrigan ]
+
+Full list of resources:
+
+ Clone Set: ClusterIP-clone [ClusterIP] (unique)
+     ClusterIP:0    (ocf::heartbeat:IPaddr2):   Started morrigan
+     ClusterIP:1    (ocf::heartbeat:IPaddr2):   Started morrigan
+ Clone Set: APIServer-clone [APIServer]
+     Started: [ morrigan ]
+     Stopped: [ balar ]
+ Clone Set: Scheduler-clone [Scheduler]
+     Started: [ morrigan ]
+     Stopped: [ balar ]
+ Clone Set: Controller-clone [Controller]
+     Started: [ morrigan ]
+     Stopped: [ balar ]</code></pre>
+<p>Paramos Morrigan y activamos Balar</p>
+<pre><code>pcs cluster unstandby balar; pcs cluster standby morrigan</code></pre>
+<p>Comprobamos su funcionamiento</p>
+<pre><code>Node morrigan: standby
+Online: [ balar ]
+
+Full list of resources:
+
+ Clone Set: ClusterIP-clone [ClusterIP] (unique)
+     ClusterIP:0    (ocf::heartbeat:IPaddr2):   Started balar
+     ClusterIP:1    (ocf::heartbeat:IPaddr2):   Started balar
+ Clone Set: APIServer-clone [APIServer]
+     Started: [ balar ]
+     Stopped: [ morrigan ]
+ Clone Set: Scheduler-clone [Scheduler]
+     Started: [ balar ]
+     Stopped: [ morrigan ]
+ Clone Set: Controller-clone [Controller]
+     Started: [ balar ]
+     Stopped: [ morrigan ]</code></pre>
+<p>Paramos todos los nodos y los activamos a la vez</p>
+<pre><code>pcs cluster standby --all; pcs cluster unstandby --all</code></pre>
+<p>Con los dos nodos activos el cluster debera quedar de la siguiente forma</p>
+<pre><code>Online: [ balar morrigan ]
+
+Full list of resources:
+
+ Clone Set: ClusterIP-clone [ClusterIP] (unique)
+     ClusterIP:0        (ocf::heartbeat:IPaddr2):   Started balar
+     ClusterIP:1        (ocf::heartbeat:IPaddr2):   Started morrigan
+ Clone Set: APIServer-clone [APIServer]
+     Started: [ balar morrigan ]
+ Clone Set: Scheduler-clone [Scheduler]
+     Started: [ balar morrigan ]
+ Clone Set: Controller-clone [Controller]
+     Started: [ balar morrigan ]</code></pre>
+<p>Para terminar de desplegar configuramos los nodos con <a href="5-Exponer_svc.html#hap_manager">HAProxy con hap_manager</a></p>
+<hr />
+<p><a href="2-Kube_simple.html">Anterior</a> | <a href="4-Addons.html">Siguiente</a></p>
+</body>
+</html>

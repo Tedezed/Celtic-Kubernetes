@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
+</head>
+<body>
+<p><a href="1-Portada.html">Index</a> - <a href="7-Explotando_kubernetes.html">Anterior</a></p>
+<hr />
+<h1 id="kubernetes-ansible">Kubernetes Ansible</h1>
+<p>Instalación de Kubernetes mediante Ansible con un nodo master simple</p>
+<p>Configuración de nombres <code>sudo nano /etc/hosts</code></p>
+<pre><code>192.168.33.10   centos-master1
+192.168.33.11   centos-node1
+192.168.33.12   centos-node2</code></pre>
+<p>Clonamos el repositorio <code>git clone https://github.com/kubernetes/contrib.git</code></p>
+<p>Entramos al directorio con <code>cd contrib/ansible</code></p>
+<p>Editamos y añadimos los nodos</p>
+<p><code>nano inventory.example.single_master</code></p>
+<pre><code>[masters]
+192.168.33.10
+
+[etcd]
+192.168.33.10
+
+[nodes]
+192.168.33.11
+192.168.33.12</code></pre>
+<p>En los nodos añadimos una clave publica para poder acceder al usuario root por ssh</p>
+<p><code>mkdir .ssh</code></p>
+<p><code>touch .ssh/authorized_keys</code></p>
+<p><code>chmod 755 ~/.ssh</code></p>
+<p><code>chmod 644 ~/.ssh/authorized_keys</code></p>
+<p>Editamos <code>all.yml</code> con la configuración siguiente</p>
+<p><code>nano group_vars/all.yml</code></p>
+<pre><code>ansible_ssh_user: root
+ssh-keygen
+source_type: packageManager
+# Red
+kube_service_addresses: 10.254.0.0/16
+cluster_logging: true
+cluster_monitoring: true
+dns_setup: true</code></pre>
+<p><strong>ERROR:</strong> <code>msg: mode needs to be something octalish</code></p>
+<p><strong>SOLUCION:</strong> ansible&gt;1.9.0</p>
+<pre><code>apt-get -t jessie-backports install ansible</code></pre>
+<p>Ejecutamos con ./setup.sh -i inventory.example.single_master</p>
+<p>Listamos los minions:</p>
+<p><code>kubectl get nodes</code></p>
+<pre><code>NAME            LABELS                                 STATUS    AGE
+192.168.33.11   kubernetes.io/hostname=192.168.33.11   Ready     1m
+192.168.33.12   kubernetes.io/hostname=192.168.33.12   Ready     1m</code></pre>
+<hr />
+<p><a href="1-Portada.html">Index</a> - <a href="7-Explotando_kubernetes.html">Anterior</a></p>
+</body>
+</html>

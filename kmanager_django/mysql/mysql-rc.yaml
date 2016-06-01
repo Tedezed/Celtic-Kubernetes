@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: mysql-kmanager
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: mysql
+    spec:
+      containers:
+        - image: mysql:5.6
+          name: mysql-kmanager
+          args:
+            - "--ignore-db-dir"
+            - "lost+found"
+          ports:
+            - containerPort: 3306
+              name: mysql
+          env:
+            - name: MYSQL_USER
+              value: mysql
+            - name: MYSQL_PASSWORD
+              value: mysql
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+          securityContext:
+            capabilities: {}
+            privileged: true #privileged required for mount
+          volumeMounts:
+          - name: mysql-kmanager-storage
+            mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-kmanager-storage
+        persistentVolumeClaim:
+          claimName: mysql-claim-kmanager

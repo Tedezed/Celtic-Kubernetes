@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-disk-kmanager
+  labels:
+    name: mysql-disk-kmanager
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteMany
+  glusterfs:
+    path: dist-volume
+    endpoints: glusterfs-cluster
+    readOnly: false
+  persistentVolumeReclaimPolicy: Recycle

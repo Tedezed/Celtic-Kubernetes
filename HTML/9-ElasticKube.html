@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
+</head>
+<body>
+<h1 id="elastickube">ElasticKube</h1>
+<h2 id="características-de-elastickube">Características de ElasticKube</h2>
+<p>ElasticKube trae las siguientes características:</p>
+<ul>
+<li>Autenticación: Esta interfaz nos permite tener un control de acceso para Kubernetes, permitiendo establecer permisos y visibilidad sobre el cluster a usuarios específicos.</li>
+<li>Catálogo de plantillas: ElasticKube nos ofrece un conjunto de plantillas de recursos comunes para facilitarnos el despliegue de nuestros servicios.</li>
+<li>Reportes en tiempo real: Nos permite monitorizar las actividades que se realizan en los contenedores.</li>
+<li>Colaboración: Permite que los desarrolladores puedan definir, desplegar y administrar aplicaciones y servicios en producción.</li>
+<li>Rolling Updates: La trazabilidad y control sobre la aplicación nos permiten entregar valor constantemente.</li>
+<li>Administración: Desde la interfaz se pueden desplegar servicios, manejar usuarios, namespaces, plantillas y recursos.</li>
+</ul>
+<h2 id="servicios">Servicios</h2>
+<ul>
+<li>elastickube-mongo</li>
+<li>elastickube-server</li>
+<li>elastickube-api</li>
+<li>elastickube-charts</li>
+<li>elastickube-nginx</li>
+<li>elastickube-diagnostics</li>
+</ul>
+<p>Necesitas:</p>
+<ul>
+<li>Funcionamiento correcto de kubectl</li>
+<li>Tener disponible namespace kube-system.</li>
+<li>Ingress o en su defecto NodePort.</li>
+</ul>
+<p>Instalación:</p>
+<pre><code>curl -s https://elastickube.com | bash</code></pre>
+<p>Salida del comando</p>
+<pre><code>[root@morrigan centos]# curl -s https://elastickube.com | bash
+  _____ _           _   _      _  __     _
+ | ____| | __ _ ___| |_(_) ___| |/ /   _| |__   ___
+ |  _| | |/ _` / __| __| |/ __| &#39; / | | | &#39;_ \ / _ \
+ | |___| | (_| \__ \ |_| | (__| . \ |_| | |_) |  __/
+ |_____|_|\__,_|___/\__|_|\___|_|\_\__,_|_.__/ \___| by ElasticBox
+
+Checking kubectl is available           [ ✓ ]
+Verifying Kubernetes cluster            [ ✓ ]
+Setting up elastickube-server svc       [ ✓ ]
+Setting up elastickube-mongo svc        [ ✓ ]
+Setting up elastickube-mongo            [ ✓ ] 
+Setting up elastickube-server           [ ✓ ] 
+WARNING: LoadBalancer Ingress not detected, please ensure the address is accessible from outside the cluster. Check http://kubernetes.io/docs/user-guide/ingress/ for more information.
+Waiting for LB to be ready              [ ✓ ] 
+
+ElasticKube has been deployed!
+Please complete the installation here: http://10.254.96.57</code></pre>
+<p>En mi caso para acceder utilizare NodePort</p>
+<pre><code>kubectl --namespace=kube-system describe svc elastickube-server | grep NodePort</code></pre>
+<p>Si tenemos funcionando HAProxy dinamico, podremos entrar con la IP del ClusterIP del balanceador y el nombre del servicio elastickube-server.</p>
+<pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: kubernetes-elastickube
+  namespace: kube-system
+  labels:
+    name: kubernetes-elastickube
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    name: elastickube-server</code></pre>
+<p>Podriamos entrar con <code>tanaris/kubernetes-elastickube/</code></p>
+<p>Creamos el usuario Administrador; admin/adminadmin</p>
+</body>
+</html>
