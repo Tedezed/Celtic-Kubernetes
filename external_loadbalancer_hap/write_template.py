@@ -32,6 +32,9 @@ def write_template_conf(directory):
 	file_conf.write(template_render)
 	file_conf.close()
 
+	# Reload
+	reload_hap()
+
 	# Dominion
 	#print get_json_pods[3]['metadata']['labels']['domain']
 
