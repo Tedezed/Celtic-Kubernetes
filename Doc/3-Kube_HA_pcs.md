@@ -26,6 +26,11 @@ Cluster Kubernetes HA (2 masters y 2 minions)
 5. [Ajustes finales](#ajustes-finales)
 6. [Pruebas de funcionamiento](#pruebas)
 
+Enlaces de interes
+------------------
+
+http://kubernetes.io/docs/user-guide/debugging-pods-and-replication-controllers/
+
 <div id='escenario'/>
 
 Escenario
@@ -55,6 +60,7 @@ Esquema de funcionamiento
 -------------------------
 
 ![HA](Imagenes/topo2.jpg)
+
 
 <div id='previo'/>
 
@@ -251,19 +257,6 @@ Habilitamos y arrancamos Flanneld y Docker (Minions)
 
 #### Configuración PCS
 
-Habilitamos y arrancamos pcs (Masters)
-
-	systemctl restart pcsd.service; systemctl enable pcsd.service
-
-Cambiamos la contraseña a hacluster (Masters)
-
-	passwd hacluster
-
-Autorizamos los nodos (Morrigan)
-
-	pcs cluster auth morrigan balar
-	Username: hacluster
-
 Configuramos el cluster (Morrigan)
 
 	pcs cluster setup --name PCS-HA-Kubernetes morrigan balar
@@ -272,14 +265,6 @@ Iniciamos el cluster y lo habilitamos
 
 	pcs cluster start --all
 	pcs cluster enable --all
-
-Deshabilitamos
-
-	pcs property set stonith-enabled=false
-
-Ignorar Quorum
-	
-	pcs property set no-quorum-policy=ignore
 
 Podemos ver el estado actual con
 
@@ -347,7 +332,7 @@ Comprobamos el estado
      	Scheduler	(systemd:kube-scheduler):	Started balar
      	Controller	(systemd:kube-controller-manager):	Started balar
 
-Podemos clonar los recursos de dos formas diferentes, recomiendo el modo 2
+Podemos clonar los recursos de dos formas diferentes:
 
 * Modo 1 por recurso
 
@@ -360,10 +345,6 @@ Podemos clonar los recursos de dos formas diferentes, recomiendo el modo 2
 * Modo 2 por grupo
 
 		pcs resource clone kubernetes-master
-
-	Configuración de colocación
-
-		pcs constraint colocation add ClusterIP-clone with kubernetes-master-clone
 
 
 Comprobamos los recursos
@@ -523,7 +504,7 @@ Los nodos del cluster quedaran de la siguiente forma
 	     Stopped: [ balar morrigan ]
 
 
-En segundo lugar vamos sacando los nodos de stadby para comprobar su correcto funcionamiento. Activamos Morrigan y dejamos en standby Bañar.
+En segundo lugar vamos sacando los nodos de stadby para comprobar su correcto funcionamiento. Activamos Morrigan y dejamos en standby Balar.
 
 	pcs cluster unstandby morrigan
 
@@ -593,7 +574,7 @@ Con los dos nodos activos el cluster debera quedar de la siguiente forma
 	 Clone Set: Controller-clone [Controller]
 	     Started: [ balar morrigan ]
 
-Para terminar de desplegar configuramos los nodos con [HAProxy con hap_manager](5-Exponer_svc.md#hap_manager)
+Para terminar de desplegar configuramos los nodos con [HAProxy con hap_manager](5-Exponer_svc.md#hap_manager) y [GlusterFS](6-Almacenamiento.md#glusterfs).
 
 ---------------------------------
 
