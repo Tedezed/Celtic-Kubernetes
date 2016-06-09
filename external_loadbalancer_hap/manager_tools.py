@@ -20,7 +20,8 @@ def get_conf(directory, json_conf):
     	return data
 
 def reload_hap():
-	system('sudo sh haproxy_reload')
+	#system('sudo sh haproxy_reload')
+	system("service haproxy reload")
 
 def constraint_domain(kube_api, version, new_domain):
 	get_json = get_kube_api(kube_api, version, 'services')['items']

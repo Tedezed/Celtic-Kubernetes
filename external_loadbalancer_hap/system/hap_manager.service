@@ -6,6 +6,7 @@
 Description=HAP Manager
 
 [Service]
+User=root
 Type=forking
 ExecStart=/usr/bin/python /Celtic-Kubernetes/external_loadbalancer_hap/hap_manager_daemon.py start
 ExecStop=/usr/bin/python /Celtic-Kubernetes/external_loadbalancer_hap/hap_manager_daemon.py stop
