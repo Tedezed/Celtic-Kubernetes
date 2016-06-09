@@ -19,7 +19,7 @@ def get_conf(directory, json_conf):
     		data = load(data_file)
     	return data
 
-def reload():
+def reload_hap():
 	system('sh haproxy_reload')
 
 def constraint_domain(kube_api, version, new_domain):

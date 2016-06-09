@@ -7,7 +7,17 @@ Almacenamiento para Kubernetes
 
 * [Fuente severalnines](http://severalnines.com/blog/wordpress-application-clustering-using-kubernetes-haproxy-and-keepalived)
 
-Para dar almacenamiento persistente a Kubernetes podemos utilizar dos tecnologías; NFS y GlusterFS. Para cualquiera de ellas en Kubernetes tendremos que crear:
+Para dar almacenamiento persistente en Kubernetes, podrmos utilizar:
+
+* NFS
+* iSCSI
+* RBD (Ceph Block Device)
+* Glusterfs
+* HostPath
+* GCEPersistentDisk
+* AWSElasticBlockStore
+
+Para cualquiera de ellas en Kubernetes tendremos que crear:
 
 * PersistentVolume -- Donde especificamos el volumen persistente
 * PersistentVolumeClaim -- Donde reclamamos espacio en el volumen
@@ -15,8 +25,21 @@ Para dar almacenamiento persistente a Kubernetes podemos utilizar dos tecnologí
 Modos de acceso:
 
 * ReadWriteOnce -- read-write solo para un nodo (RWO)
-* ReadOnlyMany -- ead-only para muchos nodos (ROX)
+* ReadOnlyMany -- read-only para muchos nodos (ROX)
 * ReadWriteMany -- read-write para muchos nodos (RWX)
+
+Políticas de reciclaje de volumenes son son:
+
+* Retain - Reclamación manual
+* Recycle - Reutilizar contenido
+* Delete - Borrar contenido
+
+Estados de un volumen:
+
+* Available - disponible para reclamación
+* Bound - No disponible, se esta utilizando por una reclamación.
+* Released - La reclamación del volumen se a eliminado y esta esperando otra petición del cluster.
+* Failed - En estado de fallo.
 
 Servidor NFS Angus
 ------------------
@@ -164,10 +187,6 @@ Eliminamos el servicio NFS y todos sus ficheros para tener un escenario limpio
 
 	yum remove nfs-utils
 
-Añadimos los siguientes repositorios
-
-	yum install epel-release centos-release-gluster
-
 Instalamos GLusterFS en Angus y Dagna
 
 	yum -y install glusterfs glusterfs-fuse glusterfs-server
@@ -214,10 +233,6 @@ Por ultimo ara que se monte automáticamente lo añadimos a /etc/fstab
 
 	/dev/vdb 	/bricks/brick1 	xfs 	defaults 	1 	2
 
-Arrancamos y habilitamos GlusterFS
-
-	systemctl start glusterd.service; systemctl enable glusterd.service
-
 Añadimos Angus y Dagda
 
 * Angus
@@ -253,13 +268,13 @@ Vemos el estado de pool
 	[root@angus centos]# gluster volume status
 	No volumes present
 
-Creamos el voluen distribuido
+Creamos el volumen distribuido
 
 	gluster volume create dist-volume angus:/bricks/brick1 dagda:/bricks/brick1 force
 
 	gluster volume create dist-volume replica 2 angus:/bricks/brick1 dagda:/bricks/brick1 force
 	
-Iniciamos el voluemn distribuido
+Iniciamos el volumenn distribuido
 
 	gluster volume start dist-volume
 
@@ -293,10 +308,6 @@ Con esto ya tendremos nuestro servidor listo, podemos ver la información de los
 
 
 #### Clientes de GlusterFS (Artio y Eusus)
-
-El primer paso es añadir los siguientes epositorios
-
-	yum install epel-release centos-release-gluster
 
 Instalamos el siguiente software
 

@@ -41,6 +41,7 @@ class MyDaemon(Daemon):
 			 	if ddiff:
 				 	print "Reload HAProxy"
 				 	write_template_conf(directory)
+				 	reload_hap()
 				dic_svc_old = dic_svc_actives
 				sleep(time_sleep)
 		except IOError as e:

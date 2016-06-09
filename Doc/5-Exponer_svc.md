@@ -198,11 +198,6 @@ Instalación de pcs
 
 [Configuración con PCS](3-Kube_HA_pcs.md#conf-pcs)
 
-Autorizamos los nodos (Belenus)
-
-	pcs cluster auth belenus tanaris
-	Username: hacluster
-
 Configuramos el cluster (Belenus)
 
 	pcs cluster setup --name PCS-HAP-Kubernetes belenus tanaris
@@ -244,10 +239,6 @@ Clonamos el recurso para que este en los dos nodos
     	pcs resource clone ClusterIP \
      	 globally-unique=true clone-max=2 clone-node-max=2
 
-Configuracion de stickiness
-
-	pcs resource meta ClusterIP resource-stickiness=0
-
 Comprobamos el recurso
 
 	[root@taranis external_loadbalancer_hap]# pcs resource show
@@ -276,10 +267,6 @@ Comprobamos el estado
 Clonamos los recursos
 
 		pcs resource clone kubernetes-loadbalancer
-
-	Configuración de colocación
-
-		pcs constraint colocation add ClusterIP-clone with kubernetes-loadbalancer-clone
 
 Resultado final
 

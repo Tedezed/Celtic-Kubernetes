@@ -189,7 +189,7 @@ Utilizando un pod de [busybox](#utiles) verificamos el funcionamiento del DNS
 
 * Test 2
 
-	`kubectl create -f busybox.yaml `
+	`kubectl create -f busybox.yaml`
 
 		apiVersion: v1
 		kind: Pod

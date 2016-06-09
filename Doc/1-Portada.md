@@ -1,4 +1,4 @@
-[Index](1-Portada.md) - [Siguiente](2-Kube_simple.md)
+[Index](1-Portada.md) - [Siguiente](2-Kube_simple.md) - [Contacto](Contacto.md)
 
 ---------------------------------
 
@@ -7,10 +7,9 @@ Kubernetes HA sobre OpenStack
 
 Proyecto Celtic Kubernetes de fin de ciclo de ASIR (sysadmin) IES Gonzalo Nazareno (Dos Hermanas, España)
 
-* [Contacto](Contacto.md)
-
 El escenario tiene sus nombres tomados de los dioses Celtas de la siguiente entrada de la Wikipedia [enlace](https://es.wikipedia.org/wiki/Categor%C3%ADa:Dioses_celtas) donde podrás consultar su descripción.
 
+* Autor [Contacto](Contacto.md)
 
 Índice de contenido
 -------------------
@@ -24,7 +23,7 @@ El escenario tiene sus nombres tomados de los dioses Celtas de la siguiente entr
 7. [Explotando Kubernetes](7-Explotando_kubernetes.md)
 8. [Kubernetes con Ansible](8-Kubernetes_ansible.md)
 
-#### Los nombres elegidos son
+#### Los nombres elegidos para los nodos del cluster HA son
 
 | Nombre      | Función         | Numero  |
 |-------------------|-----------------------|-----------|
@@ -40,18 +39,6 @@ El escenario tiene sus nombres tomados de los dioses Celtas de la siguiente entr
 -----------------------------
 
 ## Definiendo Kubernetes
-
-[![GoReportCard Widget]][GoReportCard] [![GoDoc Widget]][GoDoc] [![Travis Widget]][Travis] [![Coverage Status Widget]][Coverage Status]
-
-[GoDoc]: https://godoc.org/k8s.io/kubernetes
-[GoDoc Widget]: https://godoc.org/k8s.io/kubernetes?status.svg
-[GoReportCard]: https://goreportcard.com/report/k8s.io/kubernetes
-[GoReportCard Widget]: https://goreportcard.com/badge/k8s.io/kubernetes
-[Travis]: https://travis-ci.org/kubernetes/kubernetes
-[Travis Widget]: https://travis-ci.org/kubernetes/kubernetes.svg?branch=master
-[Coverage Status]: https://coveralls.io/r/kubernetes/kubernetes
-[Coverage Status Widget]: https://coveralls.io/repos/kubernetes/kubernetes/badge.svg
-
 
 <hr>
 
@@ -90,3 +77,15 @@ Ellos actúan como balanceadores de carga entre los pods del servicio.
 
 [**Label**](https://github.com/kubernetes/kubernetes/blob/master/docs/user-guide/labels.md)
 Las etiquetas se utilizan para organizar y seleccionar grupos de objetos en función de clave: valor.
+
+-------------------------------
+
+Enlaces de interes
+------------------
+
+* http://www.aventurabinaria.es/external-load-balancer-haproxy-kubernetes/
+* http://www.aventurabinaria.es/asociar-vip-a-ip-flotante-openstack/
+* http://www.aventurabinaria.es/anadir-volumen-una-instancia-openstack/
+* http://www.aventurabinaria.es/cluster-galera-on-debian-8/
+* http://www.aventurabinaria.es/kubernetes-desplegado-centos/
+* http://kubernetes.io/docs/user-guide/debugging-pods-and-replication-controllers/
