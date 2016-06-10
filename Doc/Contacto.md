@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <div id="header"> 
  <ul>
   <li><a class="active" href="1-Portada.md">Home</a></li>
@@ -8,8 +7,6 @@
 
 ---------------------------------
 
-=======
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 Contacto
 ========
 ********

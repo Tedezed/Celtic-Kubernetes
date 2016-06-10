@@ -5,7 +5,6 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
   <title></title>
-<<<<<<< HEAD
   <style type="text/css">@import "css/style.css";</style><link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
 </head>
 <body>
@@ -32,18 +31,10 @@
 </li>
 </ul>
 </div>
-=======
-  <link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
-</head>
-<body>
-<p><a href="1-Portada.html">Index</a> - <a href="5-Exponer_svc.html">Anterior</a> | <a href="7-Explotando_kubernetes.html">Siguiente</a></p>
-<hr />
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 <h1 id="almacenamiento-para-kubernetes">Almacenamiento para Kubernetes</h1>
 <ul>
 <li><a href="http://severalnines.com/blog/wordpress-application-clustering-using-kubernetes-haproxy-and-keepalived">Fuente severalnines</a></li>
 </ul>
-<<<<<<< HEAD
 <p>Para dar almacenamiento persistente en Kubernetes, podrmos utilizar:</p>
 <ul>
 <li>NFS</li>
@@ -55,9 +46,6 @@
 <li>AWSElasticBlockStore</li>
 </ul>
 <p>Para cualquiera de ellas en Kubernetes tendremos que crear:</p>
-=======
-<p>Para dar almacenamiento persistente a Kubernetes podemos utilizar dos tecnologías; NFS y GlusterFS. Para cualquiera de ellas en Kubernetes tendremos que crear:</p>
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 <ul>
 <li>PersistentVolume -- Donde especificamos el volumen persistente</li>
 <li>PersistentVolumeClaim -- Donde reclamamos espacio en el volumen</li>
@@ -65,7 +53,6 @@
 <p>Modos de acceso:</p>
 <ul>
 <li>ReadWriteOnce -- read-write solo para un nodo (RWO)</li>
-<<<<<<< HEAD
 <li>ReadOnlyMany -- read-only para muchos nodos (ROX)</li>
 <li>ReadWriteMany -- read-write para muchos nodos (RWX)</li>
 </ul>
@@ -82,11 +69,6 @@
 <li>Released - La reclamación del volumen se a eliminado y esta esperando otra petición del cluster.</li>
 <li>Failed - En estado de fallo.</li>
 </ul>
-=======
-<li>ReadOnlyMany -- ead-only para muchos nodos (ROX)</li>
-<li>ReadWriteMany -- read-write para muchos nodos (RWX)</li>
-</ul>
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 <h2 id="servidor-nfs-angus">Servidor NFS Angus</h2>
 <p>En el servidor Angus, procedemos a montar el almacenamiento</p>
 <pre><code>yum install nfs-utils</code></pre>
@@ -190,11 +172,6 @@ myclaim1-www   &lt;none&gt;    Bound      pv-5g-www     5Gi        RWX          
 </ul>
 <p>Eliminamos el servicio NFS y todos sus ficheros para tener un escenario limpio</p>
 <pre><code>yum remove nfs-utils</code></pre>
-<<<<<<< HEAD
-=======
-<p>Añadimos los siguientes repositorios</p>
-<pre><code>yum install epel-release centos-release-gluster</code></pre>
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 <p>Instalamos GLusterFS en Angus y Dagna</p>
 <pre><code>yum -y install glusterfs glusterfs-fuse glusterfs-server</code></pre>
 <p>En mi caso, asosiare un volumen de 10G a cada una de las maquinas virtuales</p>
@@ -223,11 +200,6 @@ tmpfs             49M      0   49M   0% /run/user/1000
 <p>Por ultimo ara que se monte automáticamente lo añadimos a /etc/fstab</p>
 <p><code>nano /etc/fstab</code></p>
 <pre><code>/dev/vdb    /bricks/brick1  xfs     defaults    1   2</code></pre>
-<<<<<<< HEAD
-=======
-<p>Arrancamos y habilitamos GlusterFS</p>
-<pre><code>systemctl start glusterd.service; systemctl enable glusterd.service</code></pre>
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 <p>Añadimos Angus y Dagda</p>
 <ul>
 <li><p>Angus</p>
@@ -258,19 +230,11 @@ UUID                    Hostname    State
 
 [root@angus centos]# gluster volume status
 No volumes present</code></pre>
-<<<<<<< HEAD
 <p>Creamos el volumen distribuido</p>
 <pre><code>gluster volume create dist-volume angus:/bricks/brick1 dagda:/bricks/brick1 force
 
 gluster volume create dist-volume replica 2 angus:/bricks/brick1 dagda:/bricks/brick1 force</code></pre>
 <p>Iniciamos el volumenn distribuido</p>
-=======
-<p>Creamos el voluen distribuido</p>
-<pre><code>gluster volume create dist-volume angus:/bricks/brick1 dagda:/bricks/brick1 force
-
-gluster volume create dist-volume replica 2 angus:/bricks/brick1 dagda:/bricks/brick1 force</code></pre>
-<p>Iniciamos el voluemn distribuido</p>
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 <pre><code>gluster volume start dist-volume</code></pre>
 <p>Con esto ya tendremos nuestro servidor listo, podemos ver la información de los volúmenes</p>
 <pre><code>[root@angus centos]# gluster volume info
@@ -299,11 +263,6 @@ Task Status of Volume dist-volume
 ------------------------------------------------------------------------------
 There are no active volume tasks</code></pre>
 <h4 id="clientes-de-glusterfs-artio-y-eusus">Clientes de GlusterFS (Artio y Eusus)</h4>
-<<<<<<< HEAD
-=======
-<p>El primer paso es añadir los siguientes epositorios</p>
-<pre><code>yum install epel-release centos-release-gluster</code></pre>
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 <p>Instalamos el siguiente software</p>
 <pre><code>yum -y install glusterfs glusterfs-fuse</code></pre>
 <p>Creamos el directorio donde añadiremos el volumen distribuido</p>
@@ -431,7 +390,6 @@ spec:
     requests:
       storage: 2Gi</code></pre>
 <hr />
-<<<<<<< HEAD
 <div id="control">
 <ul>
   <li>
@@ -442,8 +400,5 @@ spec:
 </li>
 </ul>
 </div>
-=======
-<p><a href="5-Exponer_svc.html">Anterior</a> | <a href="7-Explotando_kubernetes.html">Siguiente</a></p>
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 </body>
 </html>

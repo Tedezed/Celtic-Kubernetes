@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 kubectl get pods --all-namespaces=true -o wide
 kubectl cluster-info
 
@@ -31,7 +30,3 @@ utenticación y autorización
     View the certificate.
 
       openssl x509  -noout -text -in ./server.crt
-=======
-kubectl get pods --all-namespaces=true
-kubectl cluster-info
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4

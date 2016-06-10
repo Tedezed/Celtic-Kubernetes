@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <div id="header"> 
  <ul>
   <li><a class="active" href="1-Portada.md">Home</a></li>
@@ -13,11 +12,6 @@
 </ul>
 </div>
 
-=======
-[Index](1-Portada.md) - [Anterior](4-Addons.md) | [Siguiente](6-Almacenamiento.md)
-
----------------------------------
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 
 Exponer servicios
 =================
@@ -475,7 +469,6 @@ Podemos ventrar en el pod desde el minion donde se ejecuta
 
 ------------------------------------
 
-<<<<<<< HEAD
 <div id="control"> 
  <ul>
   <li><a class="next" href="4-Addons.md">Anterior</a></li>
@@ -483,6 +476,3 @@ Podemos ventrar en el pod desde el minion donde se ejecuta
 </ul>
 </div>
 
-=======
-[Anterior](4-Addons.md) | [Siguiente](6-Almacenamiento.md)
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4

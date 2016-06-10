@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <div id="header"> 
  <ul>
   <li><a class="active" href="1-Portada.md">Home</a></li>
@@ -13,11 +12,6 @@
 </ul>
 </div>
 
-=======
-[Index](1-Portada.md) - [Anterior](3-Kube_HA_pcs.md) | [Siguiente](5-Exponer_svc.md)
-
----------------------------------
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 
 Addons de Kubernetes
 ====================
@@ -333,7 +327,6 @@ Resultado
 
 Entramos desde el navegador con `http://172.22.205.243:31974/`
 
-<<<<<<< HEAD
 Heapster
 --------
 
@@ -360,9 +353,4 @@ Podremos descargarlo desde la repositorio de ElasticKube o de Kubernetes. En mi 
   <li style="float:right"><a class="next" href="5-Exponer_svc.md">Siguiente</a></li>
 </ul>
 </div>
-=======
----------------------------------
-
-[Anterior](3-Kube_HA_pcs.md) | [Siguiente](5-Exponer_svc.md)
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 

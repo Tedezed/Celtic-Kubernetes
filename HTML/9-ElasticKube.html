@@ -5,7 +5,6 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
   <title></title>
-<<<<<<< HEAD
   <style type="text/css">@import "css/style.css";</style><link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
 </head>
 <body>
@@ -29,11 +28,6 @@
 </li>
 </ul>
 </div>
-=======
-  <link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
-</head>
-<body>
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 <h1 id="elastickube">ElasticKube</h1>
 <h2 id="características-de-elastickube">Características de ElasticKube</h2>
 <p>ElasticKube trae las siguientes características:</p>
@@ -60,7 +54,6 @@
 <li>Tener disponible namespace kube-system.</li>
 <li>Ingress o en su defecto NodePort.</li>
 </ul>
-<<<<<<< HEAD
 <h4 id="instalación">Instalación:</h4>
 <ul>
 <li><p>Metodo 1</p>
@@ -77,19 +70,6 @@ sh deploy.sh -u http://10.0.0.39:8080</code></pre></li>
 <pre><code>kubectl --namespace=kube-system delete rc elastickube-server; kubectl --namespace=kube-system delete rc elastickube-mongo; kubectl --namespace=kube-system delete svc elastickube-server; kubectl --namespace=kube-system delete svc elastickube-mongo</code></pre>
 <p>Salida del comando _____ _ _ _ _ __ <em> | <strong>| | </strong> </em> <strong><em>| |</em>(<em>) </em></strong>| |/ / <em>| |<strong> </strong></em> | <em>| | |/ </em>` / <strong>| </strong>| |/ <strong>| ' / | | | '_  / _<br /> | |</strong><em>| | (</em>| __  |<em>| | (<strong>| .  |<em>| | |</em>) | </strong>/ |</em>____|<em>|_</em>,<em>|</em><strong>/_<em>|</em>|_</strong>|<em>|__</em>,<em>|</em>.<strong>/ _</strong>| by ElasticBox</p>
 <pre><code>Checking kubectl is available           [ ✓ ]
-=======
-<p>Instalación:</p>
-<pre><code>curl -s https://elastickube.com | bash</code></pre>
-<p>Salida del comando</p>
-<pre><code>[root@morrigan centos]# curl -s https://elastickube.com | bash
-  _____ _           _   _      _  __     _
- | ____| | __ _ ___| |_(_) ___| |/ /   _| |__   ___
- |  _| | |/ _` / __| __| |/ __| &#39; / | | | &#39;_ \ / _ \
- | |___| | (_| \__ \ |_| | (__| . \ |_| | |_) |  __/
- |_____|_|\__,_|___/\__|_|\___|_|\_\__,_|_.__/ \___| by ElasticBox
-
-Checking kubectl is available           [ ✓ ]
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 Verifying Kubernetes cluster            [ ✓ ]
 Setting up elastickube-server svc       [ ✓ ]
 Setting up elastickube-mongo svc        [ ✓ ]
@@ -100,7 +80,6 @@ Waiting for LB to be ready              [ ✓ ]
 
 ElasticKube has been deployed!
 Please complete the installation here: http://10.254.96.57</code></pre>
-<<<<<<< HEAD
 <p>Podemos ver la información con</p>
 <pre><code>kubectl --namespace=kube-system describe svc elastickube-server </code></pre>
 <p>Diagnosticamos la aplicación, accedemos con la ip o nombre de los minions, ya que por defecto se establecera el el puerto 80.</p>
@@ -316,27 +295,5 @@ Address 1: 10.254.0.1</code></pre>
 </li>
 </ul>
 </div>
-=======
-<p>En mi caso para acceder utilizare NodePort</p>
-<pre><code>kubectl --namespace=kube-system describe svc elastickube-server | grep NodePort</code></pre>
-<p>Si tenemos funcionando HAProxy dinamico, podremos entrar con la IP del ClusterIP del balanceador y el nombre del servicio elastickube-server.</p>
-<pre><code>apiVersion: v1
-kind: Service
-metadata:
-  name: kubernetes-elastickube
-  namespace: kube-system
-  labels:
-    name: kubernetes-elastickube
-spec:
-  type: NodePort
-  ports:
-  - port: 80
-    protocol: TCP
-    targetPort: 80
-  selector:
-    name: elastickube-server</code></pre>
-<p>Podriamos entrar con <code>tanaris/kubernetes-elastickube/</code></p>
-<p>Creamos el usuario Administrador; admin/adminadmin</p>
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 </body>
 </html>

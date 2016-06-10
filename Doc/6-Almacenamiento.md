@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <div id="header"> 
  <ul>
   <li><a class="active" href="1-Portada.md">Home</a></li>
@@ -12,11 +11,6 @@
   <li style="float:right"><a class="next" href="7-Explotando_kubernetes.md">Siguiente</a></li>
 </ul>
 </div>
-=======
-[Index](1-Portada.md) - [Anterior](5-Exponer_svc.md) | [Siguiente](7-Explotando_kubernetes.md)
-
----------------------------------
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 
 Almacenamiento para Kubernetes
 ==============================
@@ -500,13 +494,9 @@ Creamos una reserva de ejemplo de 2Gi
 
 -----------------------------------
 
-<<<<<<< HEAD
 <div id="control"> 
  <ul>
   <li><a class="next" href="5-Exponer_svc.md">Anterior</a></li>
   <li style="float:right"><a class="next" href="7-Explotando_kubernetes.md">Siguiente</a></li>
 </ul>
 </div>
-=======
-[Anterior](5-Exponer_svc.md) | [Siguiente](7-Explotando_kubernetes.md)
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4

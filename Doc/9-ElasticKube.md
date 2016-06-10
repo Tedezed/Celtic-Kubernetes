@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <div id="header"> 
  <ul>
   <li><a class="active" href="1-Portada.md">Home</a></li>
@@ -12,8 +11,6 @@
 </ul>
 </div>
 
-=======
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 ElasticKube
 ===========
 
@@ -65,7 +62,6 @@ Necesitas:
 
 		curl -s https://raw.githubusercontent.com/ElasticBox/elastickube/master/build/deploy.sh | bash
 
-<<<<<<< HEAD
 * Mediante plantilla yaml
 
       apiVersion: v1
@@ -201,13 +197,10 @@ Necesitas:
         selector:
           name: elastickube-server
 
-=======
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 #### Borrar Elastickube
 
 	kubectl --namespace=kube-system delete rc elastickube-server; kubectl --namespace=kube-system delete rc elastickube-mongo; kubectl --namespace=kube-system delete svc elastickube-server; kubectl --namespace=kube-system delete svc elastickube-mongo
 
-<<<<<<< HEAD
 #### Ejecución
 
 Salida del comando si instalamos con metodo 1/4
@@ -229,27 +222,6 @@ Salida del comando si instalamos con metodo 1/4
 
     	ElasticKube has been deployed!
     	Please complete the installation here: http://10.254.96.57
-=======
-
-Salida del comando
-	  _____ _           _   _      _  __     _
-	 | ____| | __ _ ___| |_(_) ___| |/ /   _| |__   ___
-	 |  _| | |/ _` / __| __| |/ __| ' / | | | '_ \ / _ \
-	 | |___| | (_| \__ \ |_| | (__| . \ |_| | |_) |  __/
-	 |_____|_|\__,_|___/\__|_|\___|_|\_\__,_|_.__/ \___| by ElasticBox
-
-	Checking kubectl is available           [ ✓ ]
-	Verifying Kubernetes cluster            [ ✓ ]
-	Setting up elastickube-server svc       [ ✓ ]
-	Setting up elastickube-mongo svc        [ ✓ ]
-	Setting up elastickube-mongo            [ ✓ ] 
-	Setting up elastickube-server           [ ✓ ] 
-	WARNING: LoadBalancer Ingress not detected, please ensure the address is accessible from outside the cluster. Check http://kubernetes.io/docs/user-guide/ingress/ for more information.
-	Waiting for LB to be ready              [ ✓ ] 
-
-	ElasticKube has been deployed!
-	Please complete the installation here: http://10.254.96.57
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 
 
 Podemos ver la información con
@@ -459,7 +431,6 @@ Name:      kubernetes
 Address 1: 10.254.0.1
 ```
 
-<<<<<<< HEAD
 ----------------------
 
 <div id="control"> 
@@ -467,274 +438,3 @@ Address 1: 10.254.0.1
   <li><a class="next" href="8-Kubernetes_ansible.md">Anterior</a></li>
 </ul>
 </div>
-=======
-
----------------
-
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: pv-3g-mongo-1
-spec:
-  capacity:
-    storage: 3Gi
-  accessModes:
-    - ReadWriteMany
-  glusterfs:
-    path: dist-volume
-    endpoints: glusterfs-cluster
-    readOnly: false
-  persistentVolumeReclaimPolicy: Recycle
-----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: mongoclaim-1-db
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 2Gi
-----
-apiVersion: v1
-kind: ReplicationController
-metadata:
-  name: elastickube-mongo
-  namespace: kube-system
-  labels:
-    name: elastickube-mongo
-spec:
-  replicas: 1
-  selector:
-    name: elastickube-mongo
-  template:
-    metadata:
-      labels:
-        name: elastickube-mongo
-    spec:
-      containers:
-        - image: mongo
-          name: elastickube-mongo
-          args:
-          - --replSet=elastickube
-          ports:
-          - name: mongo
-            containerPort: 27017
-            hostPort: 27017
-          volumeMounts:
-            - name: mongo-persistent-storage
-              mountPath: /data/mongodb
-      volumes:
-      - name: mongo-persistent-storage
-        persistentVolumeClaim:
-          claimName: mongoclaim-1-db
-----
-apiVersion: v1
-kind: Service
-metadata:
-  name: elastickube-mongo
-  namespace: kube-system
-  labels:
-    name: elastickube-mongo
-spec:
-  ports:
-    - port: 27017
-      targetPort: 27017
-  selector:
-    name: elastickube-mongo
-----
-apiVersion: v1
-kind: ReplicationController
-metadata:
-  name: elastickube-server
-  namespace: kube-system
-  labels:
-    name: elastickube-server
-spec:
-  replicas: 1
-  selector:
-    name: elastickube-server
-  template:
-    metadata:
-      labels:
-        name: elastickube-server
-    spec:
-      containers:
-      - name: elastickube-api
-        image: elasticbox/elastickube-api:latest 
-        resources:
-          limits:
-            cpu: 100m
-            memory: 300Mi
-        volumeMounts:
-        - name: elastickube-run
-          mountPath: /var/run
-        env:
-        - name: KUBERNETES_SERVICE_HOST
-          value: http://10.0.0.39:8080
-      - name: elastickube-charts
-        image: elasticbox/elastickube-charts:latest 
-        resources:
-          limits:
-            cpu: 100m
-            memory: 300Mi
-        volumeMounts:
-        - name: elastickube-charts
-          mountPath: /var/elastickube/charts
-      - name: elastickube-nginx
-        image: elasticbox/elastickube-nginx:latest 
-        resources:
-          limits:
-            cpu: 100m
-            memory: 300Mi
-        volumeMounts:
-        - name: elastickube-run
-          mountPath: /var/run
-        ports:
-        - containerPort: 80
-          hostPort: 80
-          name: http
-          protocol: TCP
-      - name: elastickube-diagnostics
-        image: elasticbox/elastickube-diagnostics:latest 
-        resources:
-          limits:
-            cpu: 10m
-            memory: 32Mi
-        volumeMounts:
-        - name: elastickube-run
-          mountPath: /var/run
-      volumes:
-      - name: elastickube-charts
-        hostPath:
-          path: /var/elastickube/charts
-      - name: elastickube-run
-        hostPath:
-          path: /var/run/elastickube
-----
-apiVersion: v1
-kind: Service
-metadata:
-  name: elastickube-server
-  namespace: kube-system
-  labels:
-    name: elastickube-server
-spec:
-  type: LoadBalancer
-  ports:
-    - port: 80
-      targetPort: 80
-  selector:
-    name: elastickube-server
-
-
-# Mongo
-
-apiVersion: v1
-kind: ReplicationController
-metadata:
-  name: elastickube-mongo
-  namespace: kube-system
-  labels:
-    name: elastickube-mongo
-spec:
-  replicas: 1
-  selector:
-    name: elastickube-mongo
-  template:
-    metadata:
-      labels:
-        name: elastickube-mongo
-    spec:
-      containers:
-        - image: mongo
-          name: elastickube-mongo
-          args:
-          - --replSet=elastickube
-          ports:
-          - name: mongo
-            containerPort: 27017
-            hostPort: 27017
-          volumeMounts:
-            - name: mongo-persistent-storage
-              mountPath: /data/mongodb
-      volumes:
-      - name: mongo-persistent-storage
-        hostPath:
-          path: /data/mongodb
-----
-apiVersion: v1
-kind: Service
-metadata:
-  name: elastickube-mongo
-  namespace: kube-system
-  labels:
-    name: elastickube-mongo
-spec:
-  ports:
-    - port: 27017
-      targetPort: 27017
-  selector:
-    name: elastickube-mongo
-
-
-**Error:** Heapster Connection Not Found 404
-
-**Solución:**
-
-[Fuente](https://github.com/ElasticBox/elastickube/tree/master/build/kubegrunt/heapster)
-
-Instalamos Heapster en Kubernetes para monitorizar nuestro kluster con ElasticKube
-
-  for file in $(ls | grep "\.yaml") ; do \
-  	kubectl create -f $file
-  done
-
-Podemos borrarlo con:
-
-  for file in $(ls | grep "\.yaml") ; do \
-  	kubectl delete -f $file
-  done
-
-
-------------------
-
-kubectl exec elastickube-server-o1tc0 --namespace=kube-system -- ls /var/run/secrets/kubernetes.io/serviceaccount/
-
-kubectl exec elastickube-server-o1tc0 --namespace=kube-system -- export KUBERNETES_SERVICE_HOST="10.0.0.39:8080"
-
-
-
------------------------
-
-Autenticación y autorización
-============================
-
-* [Fuente](http://kubernetes.io/docs/admin/authentication/)
-* [Fuente](http://www.dasblinkenlichten.com/kubernetes-authentication-plugins-and-kubeconfig/)
-
-    Generate a ca.key with 2048bit:
-
-      openssl genrsa -out ca.key 2048
-
-    According to the ca.key generate a ca.crt (use -days to set the certificate effective time):
-
-      openssl req -x509 -new -nodes -key ca.key -subj "/CN=${MASTER_IP}" -days 10000 -out ca.crt
-
-    Generate a server.key with 2048bit
-
-      openssl genrsa -out server.key 2048
-
-    According to the server.key generate a server.csr:
-
-      openssl req -new -key server.key -subj "/CN=${MASTER_IP}" -out server.csr
-
-    According to the ca.key, ca.crt and server.csr generate the server.crt:
-
-      openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 10000
-
-    View the certificate.
-
-      openssl x509  -noout -text -in ./server.crt
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4

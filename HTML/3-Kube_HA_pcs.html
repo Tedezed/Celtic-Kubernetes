@@ -5,7 +5,6 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
   <title></title>
-<<<<<<< HEAD
   <style type="text/css">@import "css/style.css";</style><link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
 </head>
 <body>
@@ -32,13 +31,6 @@
 </li>
 </ul>
 </div>
-=======
-  <link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
-</head>
-<body>
-<p><a href="1-Portada.html">Index</a> - <a href="2-Kube_simple.html">Anterior</a> | <a href="4-Addons.html">Siguiente</a></p>
-<hr />
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 <h1 id="cluster-kubernetes-ha-2-masters-y-2-minions">Cluster Kubernetes HA (2 masters y 2 minions)</h1>
 <p><a href="http://www.colliernotes.com/2015/07/configure-highly-available-kubernetes.html">Inspirado en Colliernotes</a></p>
 <div id='indice'/>
@@ -65,11 +57,8 @@
 <li><a href="#ajustes-finales">Ajustes finales</a></li>
 <li><a href="#pruebas">Pruebas de funcionamiento</a></li>
 </ol>
-<<<<<<< HEAD
 <h2 id="enlaces-de-interes">Enlaces de interes</h2>
 <p>http://kubernetes.io/docs/user-guide/debugging-pods-and-replication-controllers/</p>
-=======
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 <div id='escenario'/>
 
 <h2 id="escenario">Escenario</h2>
@@ -318,28 +307,11 @@ KUBELET_ARGS=&quot;--register-node=true&quot;</code></pre></li>
 <div id='conf-pcs'/>
 
 <h4 id="configuración-pcs">Configuración PCS</h4>
-<<<<<<< HEAD
-=======
-<p>Habilitamos y arrancamos pcs (Masters)</p>
-<pre><code>systemctl restart pcsd.service; systemctl enable pcsd.service</code></pre>
-<p>Cambiamos la contraseña a hacluster (Masters)</p>
-<pre><code>passwd hacluster</code></pre>
-<p>Autorizamos los nodos (Morrigan)</p>
-<pre><code>pcs cluster auth morrigan balar
-Username: hacluster</code></pre>
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 <p>Configuramos el cluster (Morrigan)</p>
 <pre><code>pcs cluster setup --name PCS-HA-Kubernetes morrigan balar</code></pre>
 <p>Iniciamos el cluster y lo habilitamos</p>
 <pre><code>pcs cluster start --all
 pcs cluster enable --all</code></pre>
-<<<<<<< HEAD
-=======
-<p>Deshabilitamos</p>
-<pre><code>pcs property set stonith-enabled=false</code></pre>
-<p>Ignorar Quorum</p>
-<pre><code>pcs property set no-quorum-policy=ignore</code></pre>
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 <p>Podemos ver el estado actual con</p>
 <pre><code>[root@morrigan centos]# pcs status
 Cluster name: PCS-HA-Kubernetes
@@ -391,11 +363,7 @@ pcs resource create Controller syst.html:kube-controller-manager master-max=2 --
     APIServer   (syst.html:kube-apiserver):   Started balar
     Scheduler   (syst.html:kube-scheduler):   Started balar
     Controller  (syst.html:kube-controller-manager):  Started balar</code></pre>
-<<<<<<< HEAD
 <p>Podemos clonar los recursos de dos formas diferentes:</p>
-=======
-<p>Podemos clonar los recursos de dos formas diferentes, recomiendo el modo 2</p>
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 <ul>
 <li><p>Modo 1 por recurso</p>
 <pre><code>pcs resource clone ClusterIP \
@@ -404,13 +372,7 @@ pcs resource clone APIServer --group master
 pcs resource clone Scheduler --group master
 pcs resource clone Controller --group master</code></pre></li>
 <li><p>Modo 2 por grupo</p>
-<<<<<<< HEAD
 <pre><code>pcs resource clone kubernetes-master</code></pre></li>
-=======
-<pre><code>pcs resource clone kubernetes-master</code></pre>
-<p>Configuración de colocación</p>
-<pre><code>pcs constraint colocation add ClusterIP-clone with kubernetes-master-clone</code></pre></li>
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 </ul>
 <p>Comprobamos los recursos</p>
 <ul>
@@ -522,11 +484,7 @@ Full list of resources:
      Stopped: [ balar morrigan ]
  Clone Set: Controller-clone [Controller]
      Stopped: [ balar morrigan ]</code></pre>
-<<<<<<< HEAD
 <p>En segundo lugar vamos sacando los nodos de stadby para comprobar su correcto funcionamiento. Activamos Morrigan y dejamos en standby Balar.</p>
-=======
-<p>En segundo lugar vamos sacando los nodos de stadby para comprobar su correcto funcionamiento. Activamos Morrigan y dejamos en standby Bañar.</p>
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 <pre><code>pcs cluster unstandby morrigan</code></pre>
 <p>Los recursos con Morrigan activo quedaran de la siguiente forma</p>
 <pre><code>Node balar: standby
@@ -582,7 +540,6 @@ Full list of resources:
      Started: [ balar morrigan ]
  Clone Set: Controller-clone [Controller]
      Started: [ balar morrigan ]</code></pre>
-<<<<<<< HEAD
 <p>Para terminar de desplegar configuramos los nodos con <a href="5-Exponer_svc.html#hap_manager">HAProxy con hap_manager</a> y <a href="6-Almacenamiento.html#glusterfs">GlusterFS</a>.</p>
 <hr />
 <div id="control">
@@ -595,10 +552,5 @@ Full list of resources:
 </li>
 </ul>
 </div>
-=======
-<p>Para terminar de desplegar configuramos los nodos con <a href="5-Exponer_svc.html#hap_manager">HAProxy con hap_manager</a></p>
-<hr />
-<p><a href="2-Kube_simple.html">Anterior</a> | <a href="4-Addons.html">Siguiente</a></p>
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 </body>
 </html>

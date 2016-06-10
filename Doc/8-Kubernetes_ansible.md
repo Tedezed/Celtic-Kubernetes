@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <div id="header"> 
  <ul>
   <li><a class="active" href="1-Portada.md">Home</a></li>
@@ -12,11 +11,6 @@
   <li style="float:right"><a class="next" href="9-ElasticKube.md">Siguiente</a></li>
 </ul>
 </div>
-=======
-[Index](1-Portada.md) - [Anterior](7-Explotando_kubernetes.md)
-
----------------------------------
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 
 Kubernetes Ansible
 ==================
@@ -92,13 +86,9 @@ Listamos los minions:
 
 ----------------------
 
-<<<<<<< HEAD
 <div id="control"> 
  <ul>
   <li><a class="next" href="7-Explotando_kubernetes.md">Anterior</a></li>
   <li style="float:right"><a class="next" href="9-ElasticKube.md">Siguiente</a></li>
 </ul>
 </div>
-=======
-[Index](1-Portada.md) - [Anterior](7-Explotando_kubernetes.md)
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4

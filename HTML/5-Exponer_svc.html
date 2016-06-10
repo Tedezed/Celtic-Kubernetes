@@ -5,7 +5,6 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
   <title></title>
-<<<<<<< HEAD
   <style type="text/css">@import "css/style.css";</style><link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
 </head>
 <body>
@@ -32,13 +31,6 @@
 </li>
 </ul>
 </div>
-=======
-  <link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
-</head>
-<body>
-<p><a href="1-Portada.html">Index</a> - <a href="4-Addons.html">Anterior</a> | <a href="6-Almacenamiento.html">Siguiente</a></p>
-<hr />
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 <h1 id="exponer-servicios">Exponer servicios</h1>
 <h2 id="exponer-servicions-con-haproxy">Exponer servicions con HAProxy</h2>
 <ul>
@@ -201,12 +193,6 @@ backend nomatch
 <p>Instalación de pcs</p>
 <pre><code>yum install pcs</code></pre>
 <p><a href="3-Kube_HA_pcs.html#conf-pcs">Configuración con PCS</a></p>
-<<<<<<< HEAD
-=======
-<p>Autorizamos los nodos (Belenus)</p>
-<pre><code>pcs cluster auth belenus tanaris
-Username: hacluster</code></pre>
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 <p>Configuramos el cluster (Belenus)</p>
 <pre><code>pcs cluster setup --name PCS-HAP-Kubernetes belenus tanaris</code></pre>
 <p>Podemos ver el estado actual con</p>
@@ -238,11 +224,6 @@ Daemon Status:
 <p>Clonamos el recurso para que este en los dos nodos</p>
 <pre><code>    pcs resource clone ClusterIP \
      globally-unique=true clone-max=2 clone-node-max=2</code></pre>
-<<<<<<< HEAD
-=======
-<p>Configuracion de stickiness</p>
-<pre><code>pcs resource meta ClusterIP resource-stickiness=0</code></pre>
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 <p>Comprobamos el recurso</p>
 <pre><code>[root@taranis external_loadbalancer_hap]# pcs resource show
  Clone Set: ClusterIP-clone [ClusterIP] (unique)
@@ -261,15 +242,7 @@ pcs resource create HAPManager syst.html:hap_manager master-max=2 --group kubern
      HAProxy    (syst.html:haproxy):  Started belenus
      HAPManager (syst.html:hap_manager):  Started belenus</code></pre>
 <p>Clonamos los recursos</p>
-<<<<<<< HEAD
 <pre><code>    pcs resource clone kubernetes-loadbalancer</code></pre>
-=======
-<pre><code>    pcs resource clone kubernetes-loadbalancer
-
-Configuración de colocación
-
-    pcs constraint colocation add ClusterIP-clone with kubernetes-loadbalancer-clone</code></pre>
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 <p>Resultado final</p>
 <pre><code>[root@taranis external_loadbalancer_hap]# pcs resource show
  Clone Set: ClusterIP-clone [ClusterIP] (unique)
@@ -410,7 +383,6 @@ artio     kubernetes.io/hostname=artio,role=loadbalancer   Ready     2m</code></
 <p>Podemos ventrar en el pod desde el minion donde se ejecuta</p>
 <pre><code>docker exec -i -t $(docker ps | grep gcr.io/google_containers/servicelb:0.4 | awk &#39;{ print $1 }&#39; | sed q) bash</code></pre>
 <hr />
-<<<<<<< HEAD
 <div id="control">
 <ul>
   <li>
@@ -421,8 +393,5 @@ artio     kubernetes.io/hostname=artio,role=loadbalancer   Ready     2m</code></
 </li>
 </ul>
 </div>
-=======
-<p><a href="4-Addons.html">Anterior</a> | <a href="6-Almacenamiento.html">Siguiente</a></p>
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 </body>
 </html>
