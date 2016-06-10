@@ -1,6 +1,16 @@
-[Index](1-Portada.md) - [Anterior](2-Kube_simple.md) | [Siguiente](4-Addons.md)
-
----------------------------------
+<div id="header"> 
+ <ul>
+  <li><a class="active" href="1-Portada.md">Home</a></li>
+  <li><a class="bar" href="https://github.com/Tedezed/Celtic-Kubernetes">Github</a></li>
+  <li style="float:bottom"><a class="bar" href="Contacto.md">Contacto</a></li>
+</ul>
+</div>
+<div id="control"> 
+ <ul>
+  <li><a class="next" href="2-Kube_simple.md">Anterior</a></li>
+  <li style="float:right"><a class="next" href="4-Addons.md">Siguiente</a></li>
+</ul>
+</div>
 
 Cluster Kubernetes HA (2 masters y 2 minions)
 =============================================
@@ -578,4 +588,9 @@ Para terminar de desplegar configuramos los nodos con [HAProxy con hap_manager](
 
 ---------------------------------
 
-[Anterior](2-Kube_simple.md) | [Siguiente](4-Addons.md)
+<div id="control"> 
+ <ul>
+  <li><a class="next" href="2-Kube_simple.md">Anterior</a></li>
+  <li style="float:right"><a class="next" href="4-Addons.md">Siguiente</a></li>
+</ul>
+</div>

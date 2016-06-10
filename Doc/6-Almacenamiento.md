@@ -1,6 +1,16 @@
-[Index](1-Portada.md) - [Anterior](5-Exponer_svc.md) | [Siguiente](7-Explotando_kubernetes.md)
-
----------------------------------
+<div id="header"> 
+ <ul>
+  <li><a class="active" href="1-Portada.md">Home</a></li>
+  <li><a class="bar" href="https://github.com/Tedezed/Celtic-Kubernetes">Github</a></li>
+  <li style="float:bottom"><a class="bar" href="Contacto.md">Contacto</a></li>
+</ul>
+</div>
+<div id="control"> 
+ <ul>
+  <li><a class="next" href="5-Exponer_svc.md">Anterior</a></li>
+  <li style="float:right"><a class="next" href="7-Explotando_kubernetes.md">Siguiente</a></li>
+</ul>
+</div>
 
 Almacenamiento para Kubernetes
 ==============================
@@ -484,4 +494,9 @@ Creamos una reserva de ejemplo de 2Gi
 
 -----------------------------------
 
-[Anterior](5-Exponer_svc.md) | [Siguiente](7-Explotando_kubernetes.md)
+<div id="control"> 
+ <ul>
+  <li><a class="next" href="5-Exponer_svc.md">Anterior</a></li>
+  <li style="float:right"><a class="next" href="7-Explotando_kubernetes.md">Siguiente</a></li>
+</ul>
+</div>

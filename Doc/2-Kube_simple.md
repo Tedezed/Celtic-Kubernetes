@@ -1,7 +1,16 @@
-[Index](1-Portada.md) - [Anterior](1-Portada.md) | [Siguiente](3-Kube_HA_pcs.md)
-
----------------------------------
-
+<div id="header"> 
+ <ul>
+  <li><a class="active" href="1-Portada.md">Home</a></li>
+  <li><a class="bar" href="https://github.com/Tedezed/Celtic-Kubernetes">Github</a></li>
+  <li style="float:bottom"><a class="bar" href="Contacto.md">Contacto</a></li>
+</ul>
+</div>
+<div id="control"> 
+ <ul>
+  <li><a class="next" href="1-Portada.md">Anterior</a></li>
+  <li style="float:right"><a class="next" href="3-Kube_HA_pcs.md">Siguiente</a></li>
+</ul>
+</div>
 
 Kubernetes simple (1 Master y 1 Minion)
 =======================================
@@ -129,4 +138,9 @@ Podemos comprobar el estado del minion Artio con
 
 ---------------------------------
 
-[Anterior](1-Portada.md) | [Siguiente](3-Kube_HA_pcs.md)
+<div id="control"> 
+ <ul>
+  <li><a class="next" href="1-Portada.md">Anterior</a></li>
+  <li style="float:right"><a class="next" href="3-Kube_HA_pcs.md">Siguiente</a></li>
+</ul>
+</div>

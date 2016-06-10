@@ -1,0 +1,74 @@
+div#header{
+  position:fixed;
+  top:0;
+  left:0;
+  width:150px;
+  height:500%;
+  background-color:#1B2333;
+  color: #FFF;
+  font-size: 16px;
+}
+
+div#header ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 150px;
+}
+
+div#header li a {
+    display: block;
+    color: #FFF;
+    padding: 13px 0 8px 8px;
+    text-decoration: none;
+}
+
+/* Change the link color on hover */
+div#header li a:hover {
+    background-color: #555;
+    color: white;
+}
+
+
+
+div#control ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+div#control li {
+    float: left;
+}
+
+div#control li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 2px 16px;
+    text-decoration: none;
+}
+
+div#control li a:hover {
+    background-color: #111;
+}
+
+div#control .active {
+    background-color: #326de6;
+}
+
+div#control .bar {
+    background-color: #333;
+}
+
+div#control .next {
+    background-color: #848484;
+}
+
+div#control ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}

@@ -5,21 +5,39 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
   <title></title>
-  <link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
+  <style type="text/css">@import "css/style.css";</style><link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
 </head>
 <body>
-<p><a href="index.html">Index</a> - <a href="2-Kube_simple.html">Siguiente</a></p>
-<hr />
+<div id="header">
+<ul>
+  <li>
+<a class="active" href="1-Portada.html">Home</a>
+</li>
+  <li>
+<a class="bar" href="https://github.com/Tedezed/Celtic-Kubernetes">Github</a>
+</li>
+  <li style="float:bottom">
+<a class="bar" href="Contacto.html">Contacto</a>
+</li>
+</ul>
+</div>
+<div id="control">
+<ul>
+  <li style="float:right">
+<a class="next" href="2-Kube_simple.html">Siguiente</a>
+</li>
+</ul>
+</div>
 <h1 id="kubernetes-ha-sobre-openstack">Kubernetes HA sobre OpenStack</h1>
 <p>Proyecto Celtic Kubernetes de fin de ciclo de ASIR (sysadmin) IES Gonzalo Nazareno (Dos Hermanas, España)</p>
-<ul>
-<li><a href="Contacto.html">Contacto</a></li>
-</ul>
 <p>El escenario tiene sus nombres tomados de los dioses Celtas de la siguiente entrada de la Wikipedia <a href="https://es.wikipedia.org/wiki/Categor%C3%ADa:Dioses_celtas">enlace</a> donde podrás consultar su descripción.</p>
+<ul>
+<li>Autor <a href="Contacto.html">Contacto</a></li>
+</ul>
 <h2 id="índice-de-contenido">Índice de contenido</h2>
 <hr />
 <ol style="list-style-type: decimal">
-<li><a href="index.html">Portada proyecto</a></li>
+<li><a href="1-Portada.html">Portada proyecto</a></li>
 <li><a href="2-Kube_simple.html">Despliegue simple Kubernetes</a></li>
 <li><a href="3-Kube_HA_pcs.html">Despliegue Kubernetes cluster en HA masters y minions</a></li>
 <li><a href="4-Addons.html">Addons para Kubernetes</a></li>
@@ -28,7 +46,7 @@
 <li><a href="7-Explotando_kubernetes.html">Explotando Kubernetes</a></li>
 <li><a href="8-Kubernetes_ansible.html">Kubernetes con Ansible</a></li>
 </ol>
-<h4 id="los-nombres-elegidos-son">Los nombres elegidos son</h4>
+<h4 id="los-nombres-elegidos-para-los-nodos-del-cluster-ha-son">Los nombres elegidos para los nodos del cluster HA son</h4>
 <table>
 <thead>
 <tr class="header">
@@ -82,7 +100,6 @@
 </table>
 <hr />
 <h2 id="definiendo-kubernetes">Definiendo Kubernetes</h2>
-<p><a href="https://goreportcard.com/report/k8s.io/kubernetes"><img src="https://goreportcard.com/badge/k8s.io/kubernetes" alt="GoReportCard Widget" /></a> <a href="https://godoc.org/k8s.io/kubernetes"><img src="https://godoc.org/k8s.io/kubernetes?status.svg" alt="GoDoc Widget" /></a> <a href="https://travis-ci.org/kubernetes/kubernetes"><img src="https://travis-ci.org/kubernetes/kubernetes.svg?branch=master" alt="Travis Widget" /></a> <a href="https://coveralls.io/r/kubernetes/kubernetes"><img src="https://coveralls.io/repos/kubernetes/kubernetes/badge.svg" alt="Coverage Status Widget" /></a></p>
 <hr>
 
 <p>Kubernetes es un orquestador de <a href="https://github.com/kubernetes/kubernetes/wiki/Why-Kubernetes%3F#why-containers">contenedores</a> open source a través de múltiples hosts, proporcionar mecanismos básicos para el despliegue, mantenimiento y escalado de aplicaciones.</p>
@@ -104,5 +121,23 @@
 <p><a href="docs/user-guide/replication-controller.html"><strong>Replication controller</strong></a> Los controladores de replicación gestionar el ciclo de vida de los pods. Se aseguran de que un determinado número de pods están ejecutando en cualquier momento dado, creando o matando los pods que se definan.</p>
 <p><a href="https://github.com/kubernetes/kubernetes/blob/master/docs/user-guide/services.html"><strong>Service</strong></a> Los servicios proporcionan un unico, nombre estable y dirección para un conjunto de pods. Ellos actúan como balanceadores de carga entre los pods del servicio.</p>
 <p><a href="https://github.com/kubernetes/kubernetes/blob/master/docs/user-guide/labels.html"><strong>Label</strong></a> Las etiquetas se utilizan para organizar y seleccionar grupos de objetos en función de clave: valor.</p>
+<hr />
+<h2 id="enlaces-de-interes">Enlaces de interes</h2>
+<ul>
+<li>http://www.aventurabinaria.es/external-load-balancer-haproxy-kubernetes/</li>
+<li>http://www.aventurabinaria.es/asociar-vip-a-ip-flotante-openstack/</li>
+<li>http://www.aventurabinaria.es/anadir-volumen-una-instancia-openstack/</li>
+<li>http://www.aventurabinaria.es/cluster-galera-on-debian-8/</li>
+<li>http://www.aventurabinaria.es/kubernetes-desplegado-centos/</li>
+<li>http://kubernetes.io/docs/user-guide/debugging-pods-and-replication-controllers/</li>
+</ul>
+<hr />
+<div id="control">
+<ul>
+  <li style="float:right">
+<a class="next" href="2-Kube_simple.html">Siguiente</a>
+</li>
+</ul>
+</div>
 </body>
 </html>

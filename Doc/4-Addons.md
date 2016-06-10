@@ -1,6 +1,17 @@
-[Index](1-Portada.md) - [Anterior](3-Kube_HA_pcs.md) | [Siguiente](5-Exponer_svc.md)
+<div id="header"> 
+ <ul>
+  <li><a class="active" href="1-Portada.md">Home</a></li>
+  <li><a class="bar" href="https://github.com/Tedezed/Celtic-Kubernetes">Github</a></li>
+  <li style="float:bottom"><a class="bar" href="Contacto.md">Contacto</a></li>
+</ul>
+</div>
+<div id="control"> 
+ <ul>
+  <li><a class="next" href="3-Kube_HA_pcs.md">Anterior</a></li>
+  <li style="float:right"><a class="next" href="5-Exponer_svc.md">Siguiente</a></li>
+</ul>
+</div>
 
----------------------------------
 
 Addons de Kubernetes
 ====================
@@ -316,7 +327,30 @@ Resultado
 
 Entramos desde el navegador con `http://172.22.205.243:31974/`
 
+Heapster
+--------
+
+Podremos descargarlo desde la repositorio de ElasticKube o de Kubernetes. En mi caso como solo lo utilizare para ElasticKube decidí instalarlo desde su repositorio. Los ficheros yaml que necesitamos están en [fuente](https://github.com/ElasticBox/elastickube/tree/master/build/kubegrunt/heapster)
+
+#### Instalamos Heapster en Kubernetes para monitorizar nuestro kluster con ElasticKube
+
+	  for file in $(ls | grep "\.yaml") ; do \
+	  	kubectl create -f $file
+	  done
+
+#### Podemos borrarlo con:
+
+	  for file in $(ls | grep "\.yaml") ; do \
+	  	kubectl delete -f $file
+	  done
+
+
 ---------------------------------
 
-[Anterior](3-Kube_HA_pcs.md) | [Siguiente](5-Exponer_svc.md)
+<div id="control"> 
+ <ul>
+  <li><a class="next" href="3-Kube_HA_pcs.md">Anterior</a></li>
+  <li style="float:right"><a class="next" href="5-Exponer_svc.md">Siguiente</a></li>
+</ul>
+</div>
 

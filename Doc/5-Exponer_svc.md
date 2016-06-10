@@ -1,6 +1,17 @@
-[Index](1-Portada.md) - [Anterior](4-Addons.md) | [Siguiente](6-Almacenamiento.md)
+<div id="header"> 
+ <ul>
+  <li><a class="active" href="1-Portada.md">Home</a></li>
+  <li><a class="bar" href="https://github.com/Tedezed/Celtic-Kubernetes">Github</a></li>
+  <li style="float:bottom"><a class="bar" href="Contacto.md">Contacto</a></li>
+</ul>
+</div>
+<div id="control"> 
+ <ul>
+  <li><a class="next" href="4-Addons.md">Anterior</a></li>
+  <li style="float:right"><a class="next" href="6-Almacenamiento.md">Siguiente</a></li>
+</ul>
+</div>
 
----------------------------------
 
 Exponer servicios
 =================
@@ -458,4 +469,10 @@ Podemos ventrar en el pod desde el minion donde se ejecuta
 
 ------------------------------------
 
-[Anterior](4-Addons.md) | [Siguiente](6-Almacenamiento.md)
+<div id="control"> 
+ <ul>
+  <li><a class="next" href="4-Addons.md">Anterior</a></li>
+  <li style="float:right"><a class="next" href="6-Almacenamiento.md">Siguiente</a></li>
+</ul>
+</div>
+

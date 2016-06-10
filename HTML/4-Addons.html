@@ -5,11 +5,32 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
   <title></title>
-  <link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
+  <style type="text/css">@import "css/style.css";</style><link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
 </head>
 <body>
-<p><a href="1-Portada.html">Index</a> - <a href="3-Kube_HA_pcs.html">Anterior</a> | <a href="5-Exponer_svc.html">Siguiente</a></p>
-<hr />
+<div id="header">
+<ul>
+  <li>
+<a class="active" href="1-Portada.html">Home</a>
+</li>
+  <li>
+<a class="bar" href="https://github.com/Tedezed/Celtic-Kubernetes">Github</a>
+</li>
+  <li style="float:bottom">
+<a class="bar" href="Contacto.html">Contacto</a>
+</li>
+</ul>
+</div>
+<div id="control">
+<ul>
+  <li>
+<a class="next" href="3-Kube_HA_pcs.html">Anterior</a>
+</li>
+  <li style="float:right">
+<a class="next" href="5-Exponer_svc.html">Siguiente</a>
+</li>
+</ul>
+</div>
 <h1 id="addons-de-kubernetes">Addons de Kubernetes</h1>
 <p>En primer lugar para ordenar los componentes de Kubernetes de los que no lo son creamos un espacio de nombres para el sistema</p>
 <p><code>kubectl create -f kube-system.yaml</code></p>
@@ -278,7 +299,26 @@ NAME                   CLUSTER_IP       EXTERNAL_IP   PORT(S)         SELECTOR  
 kube-dns               10.254.0.10      &lt;none&gt;        53/UDP,53/TCP   k8s-app=kube-dns               4d
 kubernetes-dashboard   10.254.236.238   &lt;none&gt;        80/TCP          k8s-app=kubernetes-dashboard   57s</code></pre>
 <p>Entramos desde el navegador con <code>http://172.22.205.243:31974/</code></p>
+<h2 id="heapster">Heapster</h2>
+<p>Podremos descargarlo desde la repositorio de ElasticKube o de Kubernetes. En mi caso como solo lo utilizare para ElasticKube decidí instalarlo desde su repositorio. Los ficheros yaml que necesitamos están en <a href="https://github.com/ElasticBox/elastickube/tree/master/build/kubegrunt/heapster">fuente</a></p>
+<h4 id="instalamos-heapster-en-kubernetes-para-monitorizar-nuestro-kluster-con-elastickube">Instalamos Heapster en Kubernetes para monitorizar nuestro kluster con ElasticKube</h4>
+<pre><code>  for file in $(ls | grep &quot;\.yaml&quot;) ; do \
+    kubectl create -f $file
+  done</code></pre>
+<h4 id="podemos-borrarlo-con">Podemos borrarlo con:</h4>
+<pre><code>  for file in $(ls | grep &quot;\.yaml&quot;) ; do \
+    kubectl delete -f $file
+  done</code></pre>
 <hr />
-<p><a href="3-Kube_HA_pcs.html">Anterior</a> | <a href="5-Exponer_svc.html">Siguiente</a></p>
+<div id="control">
+<ul>
+  <li>
+<a class="next" href="3-Kube_HA_pcs.html">Anterior</a>
+</li>
+  <li style="float:right">
+<a class="next" href="5-Exponer_svc.html">Siguiente</a>
+</li>
+</ul>
+</div>
 </body>
 </html>
