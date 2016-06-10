@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div id="header"> 
  <ul>
   <li><a class="active" href="1-Portada.md">Home</a></li>
@@ -11,6 +12,11 @@
   <li style="float:right"><a class="next" href="4-Addons.md">Siguiente</a></li>
 </ul>
 </div>
+=======
+[Index](1-Portada.md) - [Anterior](2-Kube_simple.md) | [Siguiente](4-Addons.md)
+
+---------------------------------
+>>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 
 Cluster Kubernetes HA (2 masters y 2 minions)
 =============================================
@@ -588,9 +594,13 @@ Para terminar de desplegar configuramos los nodos con [HAProxy con hap_manager](
 
 ---------------------------------
 
+<<<<<<< HEAD
 <div id="control"> 
  <ul>
   <li><a class="next" href="2-Kube_simple.md">Anterior</a></li>
   <li style="float:right"><a class="next" href="4-Addons.md">Siguiente</a></li>
 </ul>
 </div>
+=======
+[Anterior](2-Kube_simple.md) | [Siguiente](4-Addons.md)
+>>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4

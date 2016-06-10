@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div id="header"> 
  <ul>
   <li><a class="active" href="1-Portada.md">Home</a></li>
@@ -10,6 +11,11 @@
   <li style="float:right"><a class="next" href="2-Kube_simple.md">Siguiente</a></li>
 </ul>
 </div>
+=======
+[Index](1-Portada.md) - [Siguiente](2-Kube_simple.md) - [Contacto](Contacto.md)
+
+---------------------------------
+>>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 
 Kubernetes HA sobre OpenStack
 =============================
@@ -18,7 +24,11 @@ Proyecto Celtic Kubernetes de fin de ciclo de ASIR (sysadmin) IES Gonzalo Nazare
 
 El escenario tiene sus nombres tomados de los dioses Celtas de la siguiente entrada de la Wikipedia [enlace](https://es.wikipedia.org/wiki/Categor%C3%ADa:Dioses_celtas) donde podrás consultar su descripción.
 
+<<<<<<< HEAD
 * [Autor](Contacto.md)
+=======
+* Autor [Contacto](Contacto.md)
+>>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 
 Índice de contenido
 -------------------
@@ -98,6 +108,7 @@ Enlaces de interes
 * http://www.aventurabinaria.es/cluster-galera-on-debian-8/
 * http://www.aventurabinaria.es/kubernetes-desplegado-centos/
 * http://kubernetes.io/docs/user-guide/debugging-pods-and-replication-controllers/
+<<<<<<< HEAD
 
 -------------------------------
 
@@ -106,3 +117,5 @@ Enlaces de interes
   <li style="float:right"><a class="next" href="2-Kube_simple.md">Siguiente</a></li>
 </ul>
 </div>
+=======
+>>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
