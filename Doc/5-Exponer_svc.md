@@ -1,7 +1,14 @@
 <div id="header"> 
  <ul>
-  <li><a class="active" href="1-Portada.md">Home</a></li>
-  <li><a class="bar" href="https://github.com/Tedezed/Celtic-Kubernetes">Github</a></li>
+  <li><a class="bar" href="1-Portada.md">Home</a></li>
+  <li><a class="bar" href="2-Kube_simple.md">Kubernetes Simple</a></li>
+  <li><a class="bar" href="3-Kube_HA_pcs.md">Kubernetes HA</a></li>
+  <li><a class="bar" href="4-Addons.md">Addons</a></li>
+  <li><a class="active" href="5-Exponer_svc.md">Exponer servicios</a></li>
+  <li><a class="bar" href="6-Almacenamiento.md">Almacenamiento persistente</a></li>
+  <li><a class="bar" href="7-Explotando_kubernetes.md">Utilización</a></li>
+  <li><a class="bar" href="8-Kubernetes_ansible.md">Kubernetes y Ansible</a></li>
+  <li><a class="bar" href="9-ElasticKube.md">ElasticKube</a></li>
   <li style="float:bottom"><a class="bar" href="Contacto.md">Contacto</a></li>
 </ul>
 </div>
@@ -297,12 +304,12 @@ Podemos ver que funciona desde una de las maquinas de OpenStack con
 En primer lugar listamos las redes con neutron
 
 	(cli-openstack)debian-user@debian:~/Descargas$ neutron net-list
-	+--------------------------------------+--------------------------+--------------------------------------------------+
+	---------------------------------------------------------------------------------------------------------------
 	| id                                   | name                     | subnets                                          |
-	+--------------------------------------+--------------------------+--------------------------------------------------+
+	---------------------------------------------------------------------------------------------------------------
 	| 9734556d-XXXX-XXXX-XXXX-fdad435fff18 | red de juanmanuel.torres | 56693ca1-XXXX-XXXX-XXXX-ee8074bb13b1 10.0.0.0/24 |
 	| a86fc437-XXXX-XXXX-XXXX-f37a7b05537f | ext-net                  | 3c8cdfb0-XXXX-XXXX-XXXX-c6c3e228b81c             |
-	+--------------------------------------+--------------------------+--------------------------------------------------+
+	---------------------------------------------------------------------------------------------------------------
 
 Creamos un puerto para la ip de la subred que utilizaremos
 
@@ -318,9 +325,9 @@ Podremos ver el resultado con
 Para poder asociar la IP flotante necesitaremos su id, para ello podemos listar las existentes con
 
 	(cli-openstack)debian-user@debian:~/Descargas$ neutron floatingip-list
-	+--------------------------------------+------------------+---------------------+--------------------------------------+
+	---------------------------------------------------------------------------------------------------------------
 	| id                                   | fixed_ip_address | floating_ip_address | port_id                              |
-	+--------------------------------------+------------------+---------------------+--------------------------------------+
+	---------------------------------------------------------------------------------------------------------------
 	| 03eeacd9-XXXX-XXXX-XXXX-71a1182ee838 |                  | 172.22.205.249      |                                      |
 	| 0f36bd32-XXXX-XXXX-XXXX-e41867c5b8d4 | 10.0.0.50        | 172.22.205.246      | 0a10a744-XXXX-XXXX-XXXX-b8ecdcd8bac0 |
 	| 1f8d124a-XXXX-XXXX-XXXX-101c148a348d | 10.0.0.44        | 172.22.205.241      | 8c306c2b-ZZZZ-ZZZZ-ZZZZ-b64bb5753e6f |
@@ -331,7 +338,7 @@ Para poder asociar la IP flotante necesitaremos su id, para ello podemos listar 
 	| d6f96986-EEEE-EEEE-EEEE-563823df3216 |                  | 172.22.205.248      |                                      |
 	| e4d55da9-WWWW-WWWW-WWWW-308d9b147b13 | 10.0.0.53        | 172.22.205.247      | 8da8d613-BBBB-BBBB-BBBB-96e89e31d8f5 |
 	| ea9033b1-XXXX-XXXX-XXXX-6dc56a6b9cea | 10.0.0.52        | 172.22.205.245      | c219e492-NNNN-NNNN-NNNN-62ee771c5700 |
-	+--------------------------------------+------------------+---------------------+--------------------------------------+
+	---------------------------------------------------------------------------------------------------------------
 
 Finalmente la asociamos con
 
@@ -339,9 +346,9 @@ Finalmente la asociamos con
 
 	neutron floatingip-associate --fixed-ip-address 10.0.0.38 d6f96986-EEEE-EEEE-EEEE-563823df3216 2821603c-POPP-POPP-POPP-bd2349b29e63
 
-	+--------------------------------------+------------------+---------------------+--------------------------------------+
+	---------------------------------------------------------------------------------------------------------------
 	| id                                   | fixed_ip_address | floating_ip_address | port_id                              |
-	+--------------------------------------+------------------+---------------------+--------------------------------------+
+	---------------------------------------------------------------------------------------------------------------
 	| 03eeacd9-XXXX-XXXX-XXXX-71a1182ee838 |                  | 172.22.205.249      |                                      |
 	| 0f36bd32-XXXX-XXXX-XXXX-e41867c5b8d4 | 10.0.0.50        | 172.22.205.246      | 0a10a744-XXXX-XXXX-XXXX-b8ecdcd8bac0 |
 	| 1f8d124a-XXXX-XXXX-XXXX-101c148a348d | 10.0.0.44        | 172.22.205.241      | 8c306c2b-ZZZZ-ZZZZ-ZZZZ-b64bb5753e6f |
@@ -352,7 +359,7 @@ Finalmente la asociamos con
 	| d6f96986-EEEE-EEEE-EEEE-563823df3216 | 10.0.0.38        | 172.22.205.248      | 2821603c-POPP-POPP-POPP-bd2349b29e63 |
 	| e4d55da9-WWWW-WWWW-WWWW-308d9b147b13 | 10.0.0.53        | 172.22.205.247      | 8da8d613-BBBB-BBBB-BBBB-96e89e31d8f5 |
 	| ea9033b1-XXXX-XXXX-XXXX-6dc56a6b9cea | 10.0.0.52        | 172.22.205.245      | c219e492-NNNN-NNNN-NNNN-62ee771c5700 |
-	+--------------------------------------+------------------+---------------------+--------------------------------------+
+	---------------------------------------------------------------------------------------------------------------
 
 Para terminar de desplegar configuramos los nodos con [GlusterFS](6-Almacenamiento.md#glusterfs)
 

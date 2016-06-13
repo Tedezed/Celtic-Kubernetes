@@ -1,7 +1,14 @@
 <div id="header"> 
  <ul>
-  <li><a class="active" href="1-Portada.md">Home</a></li>
-  <li><a class="bar" href="https://github.com/Tedezed/Celtic-Kubernetes">Github</a></li>
+  <li><a class="bar" href="1-Portada.md">Home</a></li>
+  <li><a class="bar" href="2-Kube_simple.md">Kubernetes Simple</a></li>
+  <li><a class="bar" href="3-Kube_HA_pcs.md">Kubernetes HA</a></li>
+  <li><a class="bar" href="4-Addons.md">Addons</a></li>
+  <li><a class="bar" href="5-Exponer_svc.md">Exponer servicios</a></li>
+  <li><a class="bar" href="6-Almacenamiento.md">Almacenamiento persistente</a></li>
+  <li><a class="bar" href="7-Explotando_kubernetes.md">Utilización</a></li>
+  <li><a class="bar" href="8-Kubernetes_ansible.md">Kubernetes y Ansible</a></li>
+  <li><a class="active" href="9-ElasticKube.md">ElasticKube</a></li>
   <li style="float:bottom"><a class="bar" href="Contacto.md">Contacto</a></li>
 </ul>
 </div>
@@ -205,24 +212,25 @@ Necesitas:
 
 Salida del comando si instalamos con metodo 1/4
 
-    	  _____ _           _   _      _  __     _
-    	 | ____| | __ _ ___| |_(_) ___| |/ /   _| |__   ___
-    	 |  _| | |/ _` / __| __| |/ __| ' / | | | '_ \ / _ \
-    	 | |___| | (_| \__ \ |_| | (__| . \ |_| | |_) |  __/
-    	 |_____|_|\__,_|___/\__|_|\___|_|\_\__,_|_.__/ \___| by ElasticBox
+````
+  _____ _           _   _      _  __     _
+ | ____| | __ _ ___| |_(_) ___| |/ /   _| |__   ___
+ |  _| | |/ _` / __| __| |/ __| ' / | | | '_ \ / _ \
+ | |___| | (_| \__ \ |_| | (__| . \ |_| | |_) |  __/
+ |_____|_|\__,_|___/\__|_|\___|_|\_\__,_|_.__/ \___| by ElasticBox
 
-    	Checking kubectl is available           [ ✓ ]
-    	Verifying Kubernetes cluster            [ ✓ ]
-    	Setting up elastickube-server svc       [ ✓ ]
-    	Setting up elastickube-mongo svc        [ ✓ ]
-    	Setting up elastickube-mongo            [ ✓ ] 
-    	Setting up elastickube-server           [ ✓ ] 
-    	WARNING: LoadBalancer Ingress not detected, please ensure the address is accessible from outside the cluster. Check http://kubernetes.io/docs/user-guide/ingress/ for more information.
-    	Waiting for LB to be ready              [ ✓ ] 
+Checking kubectl is available           [ ✓ ]
+Verifying Kubernetes cluster            [ ✓ ]
+Setting up elastickube-server svc       [ ✓ ]
+Setting up elastickube-mongo svc        [ ✓ ]
+Setting up elastickube-mongo            [ ✓ ] 
+Setting up elastickube-server           [ ✓ ] 
+WARNING: LoadBalancer Ingress not detected, please ensure the address is accessible from outside the cluster. Check http://kubernetes.io/docs/user-guide/ingress/ for more information.
+Waiting for LB to be ready              [ ✓ ] 
 
-    	ElasticKube has been deployed!
-    	Please complete the installation here: http://10.254.96.57
-
+ElasticKube has been deployed!
+Please complete the installation here: http://10.254.96.57
+````
 
 Podemos ver la información con
 
