@@ -4,17 +4,41 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
-  <title></title>
-  <style type="text/css">@import "css/style.css";</style><link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>Almacenamiento para Kubernetes</title>
+  <style type="text/css">@import "css/style.css";</style><link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport"><link rel="icon" type="image/x-icon" href="Imagenes/celtic-kubernetes.ico">
 </head>
 <body>
 <div id="header">
 <ul>
   <li>
-<a class="active" href="1-Portada.html">Home</a>
+<a class="bar" href="1-Portada.html">Home</a>
 </li>
   <li>
-<a class="bar" href="https://github.com/Tedezed/Celtic-Kubernetes">Github</a>
+<a class="bar" href="2-Kube_simple.html">Kubernetes Simple</a>
+</li>
+  <li>
+<a class="bar" href="3-Kube_HA_pcs.html">Kubernetes HA</a>
+</li>
+  <li>
+<a class="bar" href="4-Addons.html">Addons</a>
+</li>
+  <li>
+<a class="bar" href="5-Exponer_svc.html">Exponer servicios</a>
+</li>
+  <li>
+<a class="active" href="6-Almacenamiento.html">Almacenamiento persistente</a>
+</li>
+  <li>
+<a class="bar" href="7-Explotando_kubernetes.html">Utilización</a>
+</li>
+  <li>
+<a class="bar" href="8-Kubernetes_ansible.html">Kubernetes y Ansible</a>
+</li>
+  <li>
+<a class="bar" href="9-ElasticKube.html">ElasticKube</a>
+</li>
+  <li>
+<a class="bar" href="10-Conclusion.html">Conclusión</a>
 </li>
   <li style="float:bottom">
 <a class="bar" href="Contacto.html">Contacto</a>
@@ -56,7 +80,7 @@
 <li>ReadOnlyMany -- read-only para muchos nodos (ROX)</li>
 <li>ReadWriteMany -- read-write para muchos nodos (RWX)</li>
 </ul>
-<p>Políticas de reciclaje de volumenes son son:</p>
+<p>Políticas de reciclaje de volúmenes son son:</p>
 <ul>
 <li>Retain - Reclamación manual</li>
 <li>Recycle - Reutilizar contenido</li>
@@ -141,7 +165,7 @@ spec:
   resources:
     requests:
       storage: 1Gi</code></pre>
-<p>Tambien creamos una reclamación de alamacenamiento para db</p>
+<p>También creamos una reclamación de almacenamiento para db</p>
 <p><code>kubectl create -f claim1-db.yaml</code></p>
 <pre><code>kind: PersistentVolumeClaim
 apiVersion: v1
@@ -174,8 +198,8 @@ myclaim1-www   &lt;none&gt;    Bound      pv-5g-www     5Gi        RWX          
 <pre><code>yum remove nfs-utils</code></pre>
 <p>Instalamos GLusterFS en Angus y Dagna</p>
 <pre><code>yum -y install glusterfs glusterfs-fuse glusterfs-server</code></pre>
-<p>En mi caso, asosiare un volumen de 10G a cada una de las maquinas virtuales</p>
-<p>Listamos los volumenes</p>
+<p>En mi caso, asociare un volumen de 10G a cada una de las maquinas virtuales</p>
+<p>Listamos los volúmenes</p>
 <p><code>lsblk</code></p>
 <pre><code>NAME   MAJ:MIN RM SIZE RO TYPE MOUNTPOINT
 vda    253:0    0   8G  0 disk 
@@ -187,7 +211,7 @@ vdb    253:16   0  10G  0 disk </code></pre>
 <pre><code>mkdir -p /bricks/brick1</code></pre>
 <p>Montamos el volumen y le damos formato:</p>
 <pre><code>mount /dev/vdb /bricks/brick1</code></pre>
-<p>Comprobamos el estadpo del volumen</p>
+<p>Comprobamos el estado del volumen</p>
 <p><code>df -h</code></p>
 <pre><code>S.ficheros     Tamaño Usados  Disp Uso% Montado en
 /dev/vda1        8,0G   1,5G  6,6G  19% /
@@ -234,7 +258,7 @@ No volumes present</code></pre>
 <pre><code>gluster volume create dist-volume angus:/bricks/brick1 dagda:/bricks/brick1 force
 
 gluster volume create dist-volume replica 2 angus:/bricks/brick1 dagda:/bricks/brick1 force</code></pre>
-<p>Iniciamos el volumenn distribuido</p>
+<p>Iniciamos el volumen distribuido</p>
 <pre><code>gluster volume start dist-volume</code></pre>
 <p>Con esto ya tendremos nuestro servidor listo, podemos ver la información de los volúmenes</p>
 <pre><code>[root@angus centos]# gluster volume info

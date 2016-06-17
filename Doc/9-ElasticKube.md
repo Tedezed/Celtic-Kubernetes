@@ -9,12 +9,14 @@
   <li><a class="bar" href="7-Explotando_kubernetes.md">Utilización</a></li>
   <li><a class="bar" href="8-Kubernetes_ansible.md">Kubernetes y Ansible</a></li>
   <li><a class="active" href="9-ElasticKube.md">ElasticKube</a></li>
+  <li><a class="bar" href="10-Conclusion.md">Conclusión</a></li>
   <li style="float:bottom"><a class="bar" href="Contacto.md">Contacto</a></li>
 </ul>
 </div>
 <div id="control"> 
  <ul>
   <li><a class="next" href="8-Kubernetes_ansible.md">Anterior</a></li>
+  <li style="float:right"><a class="next" href="10-Conclusion.md">Siguiente</a></li>
 </ul>
 </div>
 
@@ -26,12 +28,17 @@ Características de ElasticKube
 
 ElasticKube trae las siguientes características:
 
-* Autenticación: Esta interfaz nos permite tener un control de acceso para Kubernetes, permitiendo establecer permisos y visibilidad sobre el cluster a usuarios específicos.
-* Catálogo de plantillas: ElasticKube nos ofrece un conjunto de plantillas de recursos comunes para facilitarnos el despliegue de nuestros servicios.
-* Reportes en tiempo real: Nos permite monitorizar las actividades que se realizan en los contenedores.
-* Colaboración: Permite que los desarrolladores puedan definir, desplegar y administrar aplicaciones y servicios en producción.
-* Rolling Updates: La trazabilidad y control sobre la aplicación nos permiten entregar valor constantemente.
-* Administración: Desde la interfaz se pueden desplegar servicios, manejar usuarios, namespaces, plantillas y recursos.
+* **Autenticación**: Esta interfaz nos permite tener un control de acceso para Kubernetes, permitiendo establecer permisos y visibilidad sobre el cluster a usuarios específicos.
+
+* **Catálogo de plantillas**: ElasticKube nos ofrece un conjunto de plantillas de recursos comunes para facilitarnos el despliegue de nuestros servicios.
+
+* **Reportes en tiempo real**: Nos permite monitorizar las actividades que se realizan en los contenedores.
+
+* **Colaboración**: Permite que los desarrolladores puedan definir, desplegar y administrar aplicaciones y servicios en producción.
+
+* **Rolling Updates**: La trazabilidad y control sobre la aplicación nos permiten entregar valor constantemente.
+
+* **Administración**: Desde la interfaz se pueden desplegar servicios, manejar usuarios, namespaces, plantillas y recursos.
 
 
 Servicios
@@ -71,6 +78,7 @@ Necesitas:
 
 * Mediante plantilla yaml
 
+````
       apiVersion: v1
       kind: ReplicationController
       metadata:
@@ -203,6 +211,7 @@ Necesitas:
           name: http
         selector:
           name: elastickube-server
+````
 
 #### Borrar Elastickube
 
@@ -210,7 +219,7 @@ Necesitas:
 
 #### Ejecución
 
-Salida del comando si instalamos con metodo 1/4
+Salida del comando si instalamos con método 1/4
 
 ````
   _____ _           _   _      _  __     _
@@ -444,5 +453,6 @@ Address 1: 10.254.0.1
 <div id="control"> 
  <ul>
   <li><a class="next" href="8-Kubernetes_ansible.md">Anterior</a></li>
+  <li style="float:right"><a class="next" href="10-Conclusion.md">Siguiente</a></li>
 </ul>
 </div>

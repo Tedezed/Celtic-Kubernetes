@@ -4,8 +4,8 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
-  <title></title>
-  <style type="text/css">@import "css/style.css";</style><link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>Kubernetes Cluster HA sobre OpenStack</title>
+  <style type="text/css">@import "css/style.css";</style><link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport"><link rel="icon" type="image/x-icon" href="Imagenes/celtic-kubernetes.ico">
 </head>
 <body>
 <div id="header">
@@ -14,7 +14,31 @@
 <a class="active" href="1-Portada.html">Home</a>
 </li>
   <li>
-<a class="bar" href="https://github.com/Tedezed/Celtic-Kubernetes">Github</a>
+<a class="bar" href="2-Kube_simple.html">Kubernetes Simple</a>
+</li>
+  <li>
+<a class="bar" href="3-Kube_HA_pcs.html">Kubernetes HA</a>
+</li>
+  <li>
+<a class="bar" href="4-Addons.html">Addons</a>
+</li>
+  <li>
+<a class="bar" href="5-Exponer_svc.html">Exponer servicios</a>
+</li>
+  <li>
+<a class="bar" href="6-Almacenamiento.html">Almacenamiento persistente</a>
+</li>
+  <li>
+<a class="bar" href="7-Explotando_kubernetes.html">Utilización</a>
+</li>
+  <li>
+<a class="bar" href="8-Kubernetes_ansible.html">Kubernetes y Ansible</a>
+</li>
+  <li>
+<a class="bar" href="9-ElasticKube.html">ElasticKube</a>
+</li>
+  <li>
+<a class="bar" href="10-Conclusion.html">Conclusión</a>
 </li>
   <li style="float:bottom">
 <a class="bar" href="Contacto.html">Contacto</a>
@@ -28,11 +52,11 @@
 </li>
 </ul>
 </div>
-<h1 id="kubernetes-ha-sobre-openstack">Kubernetes HA sobre OpenStack</h1>
+<h1 id="kubernetes-cluster-ha-sobre-openstack">Kubernetes Cluster HA sobre OpenStack</h1>
 <p>Proyecto Celtic Kubernetes de fin de ciclo de ASIR (sysadmin) IES Gonzalo Nazareno (Dos Hermanas, España)</p>
 <p>El escenario tiene sus nombres tomados de los dioses Celtas de la siguiente entrada de la Wikipedia <a href="https://es.wikipedia.org/wiki/Categor%C3%ADa:Dioses_celtas">enlace</a> donde podrás consultar su descripción.</p>
 <ul>
-<li>Autor <a href="Contacto.html">Contacto</a></li>
+<li><a href="Contacto.html">Autor</a></li>
 </ul>
 <h2 id="índice-de-contenido">Índice de contenido</h2>
 <hr />
@@ -45,6 +69,8 @@
 <li><a href="6-Almacenamiento.html">Almacenamiento persistente para Kubernetes</a></li>
 <li><a href="7-Explotando_kubernetes.html">Explotando Kubernetes</a></li>
 <li><a href="8-Kubernetes_ansible.html">Kubernetes con Ansible</a></li>
+<li><a href="9-ElasticKube.html">ElasticKube</a></li>
+<li><a href="10-Conclusion.html">Conclusión</a></li>
 </ol>
 <h4 id="los-nombres-elegidos-para-los-nodos-del-cluster-ha-son">Los nombres elegidos para los nodos del cluster HA son</h4>
 <table>
@@ -98,6 +124,10 @@
 </tr>
 </tbody>
 </table>
+<h4 id="presentación">Presentación</h4>
+<p><a href="http://slides.com/tedezed/deck-1#/">Presentación Cluster Kuberentes HA</a></p>
+<iframe src="http://slides.com/tedezed/deck-1#/" width="99%" height="400"></iframe>
+
 <hr />
 <h2 id="definiendo-kubernetes">Definiendo Kubernetes</h2>
 <hr>
@@ -130,6 +160,20 @@
 <li>http://www.aventurabinaria.es/cluster-galera-on-debian-8/</li>
 <li>http://www.aventurabinaria.es/kubernetes-desplegado-centos/</li>
 <li>http://kubernetes.io/docs/user-guide/debugging-pods-and-replication-controllers/</li>
+<li>http://docs.openstack.org/developer/magnum/</li>
+<li>http://docs.openstack.org/developer/magnum/dev/dev-kubernetes-load-balancer.html</li>
+</ul>
+<p>Openstack y Kubernetes</p>
+<ul>
+<li>http://www.tcpcloud.eu/en/blog/2016/02/12/kubernetes-and-openstack-multi-cloud-networking/</li>
+<li>http://blog.kubernetes.io/2016/04/introducing-kubernetes-openstack-sig.html</li>
+<li>https://www.mirantis.com/blog/magnum-vs-murano-openstack-container-strategy/</li>
+</ul>
+<p>Autoescalado</p>
+<ul>
+<li>https://github.com/metral/corekube/blob/master/corekube-openstack.yaml</li>
+<li>http://superuser.openstack.org/articles/simple-auto-scaling-environment-with-heat/</li>
+<li>https://keithtenzer.com/2015/10/05/auto-scaling-applications-with-openstack-heat/</li>
 </ul>
 <hr />
 <div id="control">
