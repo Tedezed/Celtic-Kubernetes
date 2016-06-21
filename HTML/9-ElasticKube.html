@@ -4,17 +4,41 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
-  <title></title>
-  <style type="text/css">@import "css/style.css";</style><link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>ElasticKube y Kubernetes</title>
+  <style type="text/css">@import "css/style.css";</style><link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport"><link rel="icon" type="image/x-icon" href="Imagenes/celtic-kubernetes.ico">
 </head>
 <body>
 <div id="header">
 <ul>
   <li>
-<a class="active" href="1-Portada.html">Home</a>
+<a class="bar" href="1-Portada.html">Home</a>
 </li>
   <li>
-<a class="bar" href="https://github.com/Tedezed/Celtic-Kubernetes">Github</a>
+<a class="bar" href="2-Kube_simple.html">Kubernetes Simple</a>
+</li>
+  <li>
+<a class="bar" href="3-Kube_HA_pcs.html">Kubernetes HA</a>
+</li>
+  <li>
+<a class="bar" href="4-Addons.html">Addons</a>
+</li>
+  <li>
+<a class="bar" href="5-Exponer_svc.html">Exponer servicios</a>
+</li>
+  <li>
+<a class="bar" href="6-Almacenamiento.html">Almacenamiento persistente</a>
+</li>
+  <li>
+<a class="bar" href="7-Explotando_kubernetes.html">Utilización</a>
+</li>
+  <li>
+<a class="bar" href="8-Kubernetes_ansible.html">Kubernetes y Ansible</a>
+</li>
+  <li>
+<a class="active" href="9-ElasticKube.html">ElasticKube</a>
+</li>
+  <li>
+<a class="bar" href="10-Conclusion.html">Conclusión</a>
 </li>
   <li style="float:bottom">
 <a class="bar" href="Contacto.html">Contacto</a>
@@ -26,18 +50,21 @@
   <li>
 <a class="next" href="8-Kubernetes_ansible.html">Anterior</a>
 </li>
+  <li style="float:right">
+<a class="next" href="10-Conclusion.html">Siguiente</a>
+</li>
 </ul>
 </div>
 <h1 id="elastickube">ElasticKube</h1>
 <h2 id="características-de-elastickube">Características de ElasticKube</h2>
 <p>ElasticKube trae las siguientes características:</p>
 <ul>
-<li>Autenticación: Esta interfaz nos permite tener un control de acceso para Kubernetes, permitiendo establecer permisos y visibilidad sobre el cluster a usuarios específicos.</li>
-<li>Catálogo de plantillas: ElasticKube nos ofrece un conjunto de plantillas de recursos comunes para facilitarnos el despliegue de nuestros servicios.</li>
-<li>Reportes en tiempo real: Nos permite monitorizar las actividades que se realizan en los contenedores.</li>
-<li>Colaboración: Permite que los desarrolladores puedan definir, desplegar y administrar aplicaciones y servicios en producción.</li>
-<li>Rolling Updates: La trazabilidad y control sobre la aplicación nos permiten entregar valor constantemente.</li>
-<li>Administración: Desde la interfaz se pueden desplegar servicios, manejar usuarios, namespaces, plantillas y recursos.</li>
+<li><p><strong>Autenticación</strong>: Esta interfaz nos permite tener un control de acceso para Kubernetes, permitiendo establecer permisos y visibilidad sobre el cluster a usuarios específicos.</p></li>
+<li><p><strong>Catálogo de plantillas</strong>: ElasticKube nos ofrece un conjunto de plantillas de recursos comunes para facilitarnos el despliegue de nuestros servicios.</p></li>
+<li><p><strong>Reportes en tiempo real</strong>: Nos permite monitorizar las actividades que se realizan en los contenedores.</p></li>
+<li><p><strong>Colaboración</strong>: Permite que los desarrolladores puedan definir, desplegar y administrar aplicaciones y servicios en producción.</p></li>
+<li><p><strong>Rolling Updates</strong>: La trazabilidad y control sobre la aplicación nos permiten entregar valor constantemente.</p></li>
+<li><p><strong>Administración</strong>: Desde la interfaz se pueden desplegar servicios, manejar usuarios, namespaces, plantillas y recursos.</p></li>
 </ul>
 <h2 id="servicios">Servicios</h2>
 <ul>
@@ -65,11 +92,151 @@
 sh deploy.sh -u http://10.0.0.39:8080</code></pre></li>
 <li><p>Metodo 4</p>
 <pre><code>curl -s https://raw.githubusercontent.com/ElasticBox/elastickube/master/build/deploy.sh | bash</code></pre></li>
+<li><p>Mediante plantilla yaml</p></li>
 </ul>
+<pre><code>      apiVersion: v1
+      kind: ReplicationController
+      metadata:
+        name: elastickube-mongo
+        namespace: kube-system
+        labels:
+          name: elastickube-mongo
+      spec:
+        replicas: 1
+        selector:
+          name: elastickube-mongo
+        template:
+          metadata:
+            labels:
+              name: elastickube-mongo
+          spec:
+            containers:
+              - image: mongo
+                name: elastickube-mongo
+                args:
+                - --replSet=elastickube
+                ports:
+                - name: mongo
+                  containerPort: 27017
+                  hostPort: 27017
+                volumeMounts:
+                  - name: mongo-persistent-storage
+                    mountPath: /data/mongodb
+            volumes:
+            - name: mongo-persistent-storage
+              hostPath:
+                path: /data/mongodb
+      ----
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: elastickube-mongo
+        namespace: kube-system
+        labels:
+          name: elastickube-mongo
+      spec:
+        ports:
+          - port: 27017
+            targetPort: 27017
+        selector:
+          name: elastickube-mongo
+      ----
+      apiVersion: v1
+      kind: ReplicationController
+      metadata:
+        name: elastickube-server
+        namespace: kube-system
+        labels:
+          name: elastickube-server
+      spec:
+        replicas: 1
+        selector:
+          name: elastickube-server
+        template:
+          metadata:
+            labels:
+              name: elastickube-server
+          spec:
+            containers:
+            - name: elastickube-api
+              image: elasticbox/elastickube-api:latest 
+              resources:
+                limits:
+                  cpu: 100m
+                  memory: 300Mi
+              volumeMounts:
+              - name: elastickube-run
+                mountPath: /var/run
+              env:
+              - name: KUBERNETES_SERVICE_HOST
+                value: http://10.0.0.39:8080
+            - name: elastickube-charts
+              image: elasticbox/elastickube-charts:latest 
+              resources:
+                limits:
+                  cpu: 100m
+                  memory: 300Mi
+              volumeMounts:
+              - name: elastickube-charts
+                mountPath: /var/elastickube/charts
+            - name: elastickube-nginx
+              image: elasticbox/elastickube-nginx:latest 
+              resources:
+                limits:
+                  cpu: 100m
+                  memory: 300Mi
+              volumeMounts:
+              - name: elastickube-run
+                mountPath: /var/run
+              ports:
+              - containerPort: 80
+                hostPort: 80
+                name: http
+                protocol: TCP
+            - name: elastickube-diagnostics
+              image: elasticbox/elastickube-diagnostics:latest 
+              resources:
+                limits:
+                  cpu: 10m
+                  memory: 32Mi
+              volumeMounts:
+              - name: elastickube-run
+                mountPath: /var/run
+            volumes:
+            - name: elastickube-charts
+              hostPath:
+                path: /var/elastickube/charts
+            - name: elastickube-run
+              hostPath:
+                path: /var/run/elastickube
+      ----
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: elastickube-server
+        namespace: kube-system
+        labels:
+          domain: elastickube.test.com
+          name: elastickube-server
+      spec:
+        type: NodePort
+        ports:
+        - port: 80
+          protocol: TCP
+          name: http
+        selector:
+          name: elastickube-server</code></pre>
 <h4 id="borrar-elastickube">Borrar Elastickube</h4>
 <pre><code>kubectl --namespace=kube-system delete rc elastickube-server; kubectl --namespace=kube-system delete rc elastickube-mongo; kubectl --namespace=kube-system delete svc elastickube-server; kubectl --namespace=kube-system delete svc elastickube-mongo</code></pre>
-<p>Salida del comando _____ _ _ _ _ __ <em> | <strong>| | </strong> </em> <strong><em>| |</em>(<em>) </em></strong>| |/ / <em>| |<strong> </strong></em> | <em>| | |/ </em>` / <strong>| </strong>| |/ <strong>| ' / | | | '_  / _<br /> | |</strong><em>| | (</em>| __  |<em>| | (<strong>| .  |<em>| | |</em>) | </strong>/ |</em>____|<em>|_</em>,<em>|</em><strong>/_<em>|</em>|_</strong>|<em>|__</em>,<em>|</em>.<strong>/ _</strong>| by ElasticBox</p>
-<pre><code>Checking kubectl is available           [ ✓ ]
+<h4 id="ejecución">Ejecución</h4>
+<p>Salida del comando si instalamos con método 1/4</p>
+<pre><code>  _____ _           _   _      _  __     _
+ | ____| | __ _ ___| |_(_) ___| |/ /   _| |__   ___
+ |  _| | |/ _` / __| __| |/ __| &#39; / | | | &#39;_ \ / _ \
+ | |___| | (_| \__ \ |_| | (__| . \ |_| | |_) |  __/
+ |_____|_|\__,_|___/\__|_|\___|_|\_\__,_|_.__/ \___| by ElasticBox
+
+Checking kubectl is available           [ ✓ ]
 Verifying Kubernetes cluster            [ ✓ ]
 Setting up elastickube-server svc       [ ✓ ]
 Setting up elastickube-mongo svc        [ ✓ ]
@@ -254,44 +421,13 @@ Address 1: 10.254.0.10
 Name:      kubernetes
 Address 1: 10.254.0.1</code></pre>
 <hr />
-<p>apiVersion: v1 kind: PersistentVolume metadata: name: pv-3g-mongo-1 spec: capacity: storage: 3Gi accessModes: - ReadWriteMany glusterfs: path: dist-volume endpoints: glusterfs-cluster readOnly: false persistentVolumeReclaimPolicy: Recycle ---- kind: PersistentVolumeClaim apiVersion: v1 metadata: name: mongoclaim-1-db spec: accessModes: - ReadWriteMany resources: requests: storage: 2Gi ---- apiVersion: v1 kind: ReplicationController metadata: name: elastickube-mongo namespace: kube-system labels: name: elastickube-mongo spec: replicas: 1 selector: name: elastickube-mongo template: metadata: labels: name: elastickube-mongo spec: containers: - image: mongo name: elastickube-mongo args: - --replSet=elastickube ports: - name: mongo containerPort: 27017 hostPort: 27017 volumeMounts: - name: mongo-persistent-storage mountPath: /data/mongodb volumes: - name: mongo-persistent-storage persistentVolumeClaim: claimName: mongoclaim-1-db ---- apiVersion: v1 kind: Service metadata: name: elastickube-mongo namespace: kube-system labels: name: elastickube-mongo spec: ports: - port: 27017 targetPort: 27017 selector: name: elastickube-mongo ---- apiVersion: v1 kind: ReplicationController metadata: name: elastickube-server namespace: kube-system labels: name: elastickube-server spec: replicas: 1 selector: name: elastickube-server template: metadata: labels: name: elastickube-server spec: containers: - name: elastickube-api image: elasticbox/elastickube-api:latest resources: limits: cpu: 100m memory: 300Mi volumeMounts: - name: elastickube-run mountPath: /var/run env: - name: KUBERNETES_SERVICE_HOST value: http://10.0.0.39:8080 - name: elastickube-charts image: elasticbox/elastickube-charts:latest resources: limits: cpu: 100m memory: 300Mi volumeMounts: - name: elastickube-charts mountPath: /var/elastickube/charts - name: elastickube-nginx image: elasticbox/elastickube-nginx:latest resources: limits: cpu: 100m memory: 300Mi volumeMounts: - name: elastickube-run mountPath: /var/run ports: - containerPort: 80 hostPort: 80 name: http protocol: TCP - name: elastickube-diagnostics image: elasticbox/elastickube-diagnostics:latest resources: limits: cpu: 10m memory: 32Mi volumeMounts: - name: elastickube-run mountPath: /var/run volumes: - name: elastickube-charts hostPath: path: /var/elastickube/charts - name: elastickube-run hostPath: path: /var/run/elastickube ---- apiVersion: v1 kind: Service metadata: name: elastickube-server namespace: kube-system labels: name: elastickube-server spec: type: LoadBalancer ports: - port: 80 targetPort: 80 selector: name: elastickube-server</p>
-<h1 id="mongo">Mongo</h1>
-<p>apiVersion: v1 kind: ReplicationController metadata: name: elastickube-mongo namespace: kube-system labels: name: elastickube-mongo spec: replicas: 1 selector: name: elastickube-mongo template: metadata: labels: name: elastickube-mongo spec: containers: - image: mongo name: elastickube-mongo args: - --replSet=elastickube ports: - name: mongo containerPort: 27017 hostPort: 27017 volumeMounts: - name: mongo-persistent-storage mountPath: /data/mongodb volumes: - name: mongo-persistent-storage hostPath: path: /data/mongodb ---- apiVersion: v1 kind: Service metadata: name: elastickube-mongo namespace: kube-system labels: name: elastickube-mongo spec: ports: - port: 27017 targetPort: 27017 selector: name: elastickube-mongo</p>
-<p><strong>Error:</strong> Heapster Connection Not Found 404</p>
-<p><strong>Solución:</strong></p>
-<p><a href="https://github.com/ElasticBox/elastickube/tree/master/build/kubegrunt/heapster">Fuente</a></p>
-<p>Instalamos Heapster en Kubernetes para monitorizar nuestro kluster con ElasticKube</p>
-<p>for file in <span class="math">$(ls | grep &quot;\.yaml&quot;) ; do \
-    kubectl create -f $</span>file done</p>
-<p>Podemos borrarlo con:</p>
-<p>for file in <span class="math">$(ls | grep &quot;\.yaml&quot;) ; do \
-    kubectl delete -f $</span>file done</p>
-<hr />
-<p>kubectl exec elastickube-server-o1tc0 --namespace=kube-system -- ls /var/run/secrets/kubernetes.io/serviceaccount/</p>
-<p>kubectl exec elastickube-server-o1tc0 --namespace=kube-system -- export KUBERNETES_SERVICE_HOST=&quot;10.0.0.39:8080&quot;</p>
-<hr />
-<h1 id="autenticación-y-autorización">Autenticación y autorización</h1>
-<ul>
-<li><a href="http://kubernetes.io/docs/admin/authentication/">Fuente</a></li>
-<li><p><a href="http://www.dasblinkenlichten.com/kubernetes-authentication-plugins-and-kubeconfig/">Fuente</a></p>
-<p>Generate a ca.key with 2048bit:</p>
-<p>openssl genrsa -out ca.key 2048</p>
-<p>According to the ca.key generate a ca.crt (use -days to set the certificate effective time):</p>
-<p>openssl req -x509 -new -nodes -key ca.key -subj &quot;/CN=${MASTER_IP}&quot; -days 10000 -out ca.crt</p>
-<p>Generate a server.key with 2048bit</p>
-<p>openssl genrsa -out server.key 2048</p>
-<p>According to the server.key generate a server.csr:</p>
-<p>openssl req -new -key server.key -subj &quot;/CN=${MASTER_IP}&quot; -out server.csr</p>
-<p>According to the ca.key, ca.crt and server.csr generate the server.crt:</p>
-<p>openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 10000</p>
-<p>View the certificate.</p>
-<p>openssl x509 -noout -text -in ./server.crt</p></li>
-</ul>
-<hr />
 <div id="control">
 <ul>
   <li>
 <a class="next" href="8-Kubernetes_ansible.html">Anterior</a>
+</li>
+  <li style="float:right">
+<a class="next" href="10-Conclusion.html">Siguiente</a>
 </li>
 </ul>
 </div>

@@ -9,6 +9,7 @@
   <li><a class="active" href="7-Explotando_kubernetes.md">Utilización</a></li>
   <li><a class="bar" href="8-Kubernetes_ansible.md">Kubernetes y Ansible</a></li>
   <li><a class="bar" href="9-ElasticKube.md">ElasticKube</a></li>
+  <li><a class="bar" href="10-Conclusion.md">Conclusión</a></li>
   <li style="float:bottom"><a class="bar" href="Contacto.md">Contacto</a></li>
 </ul>
 </div>
@@ -86,7 +87,7 @@ Si tienes cualquier error relacionado con el pod
 
 **MySQL como RC**
 
-De forma basica
+De forma básica
 
 `kubectl create -f mysql-rc.yaml`
 
@@ -175,7 +176,7 @@ Servicio para MySQL
 
 En un principio realice una instalación de un cluster Galera en tres nodos en el exterior del cluster de Kubernetes, en el cual los pods guardaban sus bases de datos mediante un ClusterIP auto-balanceado. 
 
-Después de esto pense que simplificaría él escenario insertando el cluster Galaera en el interior de Kubernetes. Cada nodo es un rc con un servicio con su nombre, el cluster da servicio de forma interna a las aplicaciones web.
+Después de esto pensé que simplificaría él escenario insertando el cluster Galaera en el interior de Kubernetes. Cada nodo es un rc con un servicio con su nombre, el cluster da servicio de forma interna a las aplicaciones web.
 
 Desplegamos el escenario de la siguiente forma
 
@@ -389,7 +390,7 @@ Plantilla a utilizar: `galera-cluster-nodes.yaml`
 	rm -rf bridge_file; \
 	unset var_pass_root; unset var_pass_mysql; unset var_claim
 
-Lo ejecutamos con `sh create_nodes.sh`, si copias y pegas el codigo también funcionara.
+Lo ejecutamos con `sh create_nodes.sh`, si copias y pegas el código también funcionara.
 *Nota; si los nodos no terminan de crearse puede que tengas que revisar los endpoint de GlusterFS.*
 
 Comprobamos el estado de los nodos y como podemos ver estan totalmente operativos

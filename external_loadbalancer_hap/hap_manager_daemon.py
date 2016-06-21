@@ -40,8 +40,13 @@ class MyDaemon(Daemon):
 				ddiff = DeepDiff(dic_svc_actives, dic_svc_old)
 			 	if ddiff:
 				 	print "Reload HAProxy"
+<<<<<<< HEAD
 				 	# Reload en write_template!!!
 				 	write_template_conf(directory)
+=======
+				 	write_template_conf(directory)
+				 	reload_hap()
+>>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 				dic_svc_old = dic_svc_actives
 				sleep(time_sleep)
 		except IOError as e:

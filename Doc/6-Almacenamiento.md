@@ -9,6 +9,7 @@
   <li><a class="bar" href="7-Explotando_kubernetes.md">Utilización</a></li>
   <li><a class="bar" href="8-Kubernetes_ansible.md">Kubernetes y Ansible</a></li>
   <li><a class="bar" href="9-ElasticKube.md">ElasticKube</a></li>
+  <li><a class="bar" href="10-Conclusion.md">Conclusión</a></li>
   <li style="float:bottom"><a class="bar" href="Contacto.md">Contacto</a></li>
 </ul>
 </div>
@@ -45,7 +46,7 @@ Modos de acceso:
 * ReadOnlyMany -- read-only para muchos nodos (ROX)
 * ReadWriteMany -- read-write para muchos nodos (RWX)
 
-Políticas de reciclaje de volumenes son son:
+Políticas de reciclaje de volúmenes son son:
 
 * Retain - Reclamación manual
 * Recycle - Reutilizar contenido
@@ -164,7 +165,7 @@ En uno de los nodos master del cluster de Kubernetes realizamos claim de 1Gi par
 	    requests:
 	      storage: 1Gi
 
-Tambien creamos una reclamación de alamacenamiento para db
+También creamos una reclamación de almacenamiento para db
 
 `kubectl create -f claim1-db.yaml`
 
@@ -208,9 +209,9 @@ Instalamos GLusterFS en Angus y Dagna
 
 	yum -y install glusterfs glusterfs-fuse glusterfs-server
 
-En mi caso, asosiare un volumen de 10G a cada una de las maquinas virtuales
+En mi caso, asociare un volumen de 10G a cada una de las maquinas virtuales
 
-Listamos los volumenes
+Listamos los volúmenes
 
 `lsblk`
 
@@ -231,7 +232,7 @@ Montamos el volumen y le damos formato:
 
 	mount /dev/vdb /bricks/brick1
 
-Comprobamos el estadpo del volumen
+Comprobamos el estado del volumen
 
 `df -h`
 
@@ -291,7 +292,7 @@ Creamos el volumen distribuido
 
 	gluster volume create dist-volume replica 2 angus:/bricks/brick1 dagda:/bricks/brick1 force
 	
-Iniciamos el volumenn distribuido
+Iniciamos el volumen distribuido
 
 	gluster volume start dist-volume
 

@@ -4,17 +4,41 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
-  <title></title>
-  <style type="text/css">@import "css/style.css";</style><link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>Explotando Kubernetes</title>
+  <style type="text/css">@import "css/style.css";</style><link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport"><link rel="icon" type="image/x-icon" href="Imagenes/celtic-kubernetes.ico">
 </head>
 <body>
 <div id="header">
 <ul>
   <li>
-<a class="active" href="1-Portada.html">Home</a>
+<a class="bar" href="1-Portada.html">Home</a>
 </li>
   <li>
-<a class="bar" href="https://github.com/Tedezed/Celtic-Kubernetes">Github</a>
+<a class="bar" href="2-Kube_simple.html">Kubernetes Simple</a>
+</li>
+  <li>
+<a class="bar" href="3-Kube_HA_pcs.html">Kubernetes HA</a>
+</li>
+  <li>
+<a class="bar" href="4-Addons.html">Addons</a>
+</li>
+  <li>
+<a class="bar" href="5-Exponer_svc.html">Exponer servicios</a>
+</li>
+  <li>
+<a class="bar" href="6-Almacenamiento.html">Almacenamiento persistente</a>
+</li>
+  <li>
+<a class="active" href="7-Explotando_kubernetes.html">Utilización</a>
+</li>
+  <li>
+<a class="bar" href="8-Kubernetes_ansible.html">Kubernetes y Ansible</a>
+</li>
+  <li>
+<a class="bar" href="9-ElasticKube.html">ElasticKube</a>
+</li>
+  <li>
+<a class="bar" href="10-Conclusion.html">Conclusión</a>
 </li>
   <li style="float:bottom">
 <a class="bar" href="Contacto.html">Contacto</a>
@@ -84,7 +108,7 @@ spec:
       persistentVolumeClaim:
        claimName: myclaim1-db</code></pre>
 <p><strong>MySQL como RC</strong></p>
-<p>De forma basica</p>
+<p>De forma básica</p>
 <p><code>kubectl create -f mysql-rc.yaml</code></p>
 <pre><code>apiVersion: v1
 kind: ReplicationController
@@ -162,7 +186,7 @@ spec:
 <li><a href="http://patg.net/galera,percona,kubernetes,coreos,docker,vmware/2015/04/21/galera-cluster-kubernetes/">Mas información</a></li>
 </ul>
 <p>En un principio realice una instalación de un cluster Galera en tres nodos en el exterior del cluster de Kubernetes, en el cual los pods guardaban sus bases de datos mediante un ClusterIP auto-balanceado.</p>
-<p>Después de esto pense que simplificaría él escenario insertando el cluster Galaera en el interior de Kubernetes. Cada nodo es un rc con un servicio con su nombre, el cluster da servicio de forma interna a las aplicaciones web.</p>
+<p>Después de esto pensé que simplificaría él escenario insertando el cluster Galaera en el interior de Kubernetes. Cada nodo es un rc con un servicio con su nombre, el cluster da servicio de forma interna a las aplicaciones web.</p>
 <p>Desplegamos el escenario de la siguiente forma</p>
 <p>En primer lugar especificar que la configuración de usuarios, contraseñas de mysql se realiza en los ficheros yaml de cada nodo, tiene que ser coherente para que funcione. Si quieres cambiar el contraseña de root, por ejemplo, tienes que cambiarla en los tres ficheros yaml de los pxc-nodes.</p>
 <p>Ejemplo</p>
@@ -344,7 +368,7 @@ do \
 done; \
 rm -rf bridge_file; \
 unset var_pass_root; unset var_pass_mysql; unset var_claim</code></pre>
-<p>Lo ejecutamos con <code>sh create_nodes.sh</code>, si copias y pegas el codigo también funcionara. <em>Nota; si los nodos no terminan de crearse puede que tengas que revisar los endpoint de GlusterFS.</em></p>
+<p>Lo ejecutamos con <code>sh create_nodes.sh</code>, si copias y pegas el código también funcionara. <em>Nota; si los nodos no terminan de crearse puede que tengas que revisar los endpoint de GlusterFS.</em></p>
 <p>Comprobamos el estado de los nodos y como podemos ver estan totalmente operativos</p>
 <pre><code>[root@morrigan galera-pvc]# kubectl get pods | grep pxc
 pxc-node1-5hwwi          1/1       Running   0          1m
