@@ -4,17 +4,41 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
-  <title></title>
-  <style type="text/css">@import "css/style.css";</style><link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>Exponer servicios Kubernetes</title>
+  <style type="text/css">@import "css/style.css";</style><link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport"><link rel="icon" type="image/x-icon" href="Imagenes/celtic-kubernetes.ico">
 </head>
 <body>
 <div id="header">
 <ul>
   <li>
-<a class="active" href="1-Portada.html">Home</a>
+<a class="bar" href="1-Portada.html">Home</a>
 </li>
   <li>
-<a class="bar" href="https://github.com/Tedezed/Celtic-Kubernetes">Github</a>
+<a class="bar" href="2-Kube_simple.html">Kubernetes Simple</a>
+</li>
+  <li>
+<a class="bar" href="3-Kube_HA_pcs.html">Kubernetes HA</a>
+</li>
+  <li>
+<a class="bar" href="4-Addons.html">Addons</a>
+</li>
+  <li>
+<a class="active" href="5-Exponer_svc.html">Exponer servicios</a>
+</li>
+  <li>
+<a class="bar" href="6-Almacenamiento.html">Almacenamiento persistente</a>
+</li>
+  <li>
+<a class="bar" href="7-Explotando_kubernetes.html">Utilización</a>
+</li>
+  <li>
+<a class="bar" href="8-Kubernetes_ansible.html">Kubernetes y Ansible</a>
+</li>
+  <li>
+<a class="bar" href="9-ElasticKube.html">ElasticKube</a>
+</li>
+  <li>
+<a class="bar" href="10-Conclusion.html">Conclusión</a>
 </li>
   <li style="float:bottom">
 <a class="bar" href="Contacto.html">Contacto</a>
@@ -32,7 +56,7 @@
 </ul>
 </div>
 <h1 id="exponer-servicios">Exponer servicios</h1>
-<h2 id="exponer-servicions-con-haproxy">Exponer servicions con HAProxy</h2>
+<h2 id="exponer-servicios-con-haproxy">Exponer servicios con HAProxy</h2>
 <ul>
 <li><a href="https://github.com/kubernetes/contrib/tree/master/service-loadbalancer">Fuente Github</a></li>
 <li><a href="http://www.dasblinkenlichten.com/kubernetes-101-external-access-into-the-cluster/">Modo 1. por puerto</a></li>
@@ -255,12 +279,12 @@ pcs resource create HAPManager syst.html:hap_manager master-max=2 --group kubern
 <h4 id="para-poder-acceder-desde-fuera-tendremos-que-relizar-una-asociación-con-una-ip-flotante-a-la-vip">Para poder acceder desde fuera tendremos que relizar una asociación con una IP flotante a la VIP</h4>
 <p>En primer lugar listamos las redes con neutron</p>
 <pre><code>(cli-openstack)debian-user@debian:~/Descargas$ neutron net-list
-+--------------------------------------+--------------------------+--------------------------------------------------+
+---------------------------------------------------------------------------------------------------------------
 | id                                   | name                     | subnets                                          |
-+--------------------------------------+--------------------------+--------------------------------------------------+
+---------------------------------------------------------------------------------------------------------------
 | 9734556d-XXXX-XXXX-XXXX-fdad435fff18 | red de juanmanuel.torres | 56693ca1-XXXX-XXXX-XXXX-ee8074bb13b1 10.0.0.0/24 |
 | a86fc437-XXXX-XXXX-XXXX-f37a7b05537f | ext-net                  | 3c8cdfb0-XXXX-XXXX-XXXX-c6c3e228b81c             |
-+--------------------------------------+--------------------------+--------------------------------------------------+</code></pre>
+---------------------------------------------------------------------------------------------------------------</code></pre>
 <p>Creamos un puerto para la ip de la subred que utilizaremos</p>
 <p><code>neutron port-create {net-id} --fixed-ip ip_address={ip}</code></p>
 <pre><code>neutron port-create 9734556d-XXXX-XXXX-XXXX-fdad435fff18 --fixed-ip ip_address=10.0.0.38</code></pre>
@@ -269,9 +293,9 @@ pcs resource create HAPManager syst.html:hap_manager master-max=2 --group kubern
 2821603c-POPP-POPP-POPP-bd2349b29e63 | | fa:16:3e:94:a9:bd | {&quot;subnet_id&quot;:&quot;56693ca1-XXXX-XXXX-XXXX-ee8074bb13b1&quot;,&quot;ip_address&quot;:&quot;10.0.0.38&quot;}</code></pre>
 <p>Para poder asociar la IP flotante necesitaremos su id, para ello podemos listar las existentes con</p>
 <pre><code>(cli-openstack)debian-user@debian:~/Descargas$ neutron floatingip-list
-+--------------------------------------+------------------+---------------------+--------------------------------------+
+---------------------------------------------------------------------------------------------------------------
 | id                                   | fixed_ip_address | floating_ip_address | port_id                              |
-+--------------------------------------+------------------+---------------------+--------------------------------------+
+---------------------------------------------------------------------------------------------------------------
 | 03eeacd9-XXXX-XXXX-XXXX-71a1182ee838 |                  | 172.22.205.249      |                                      |
 | 0f36bd32-XXXX-XXXX-XXXX-e41867c5b8d4 | 10.0.0.50        | 172.22.205.246      | 0a10a744-XXXX-XXXX-XXXX-b8ecdcd8bac0 |
 | 1f8d124a-XXXX-XXXX-XXXX-101c148a348d | 10.0.0.44        | 172.22.205.241      | 8c306c2b-ZZZZ-ZZZZ-ZZZZ-b64bb5753e6f |
@@ -282,14 +306,14 @@ pcs resource create HAPManager syst.html:hap_manager master-max=2 --group kubern
 | d6f96986-EEEE-EEEE-EEEE-563823df3216 |                  | 172.22.205.248      |                                      |
 | e4d55da9-WWWW-WWWW-WWWW-308d9b147b13 | 10.0.0.53        | 172.22.205.247      | 8da8d613-BBBB-BBBB-BBBB-96e89e31d8f5 |
 | ea9033b1-XXXX-XXXX-XXXX-6dc56a6b9cea | 10.0.0.52        | 172.22.205.245      | c219e492-NNNN-NNNN-NNNN-62ee771c5700 |
-+--------------------------------------+------------------+---------------------+--------------------------------------+</code></pre>
+---------------------------------------------------------------------------------------------------------------</code></pre>
 <p>Finalmente la asociamos con</p>
 <p><code>neutron floatingip-associate --fixed-ip-address {ip} {float-ip-uuid} {port-uuid}</code></p>
 <pre><code>neutron floatingip-associate --fixed-ip-address 10.0.0.38 d6f96986-EEEE-EEEE-EEEE-563823df3216 2821603c-POPP-POPP-POPP-bd2349b29e63
 
-+--------------------------------------+------------------+---------------------+--------------------------------------+
+---------------------------------------------------------------------------------------------------------------
 | id                                   | fixed_ip_address | floating_ip_address | port_id                              |
-+--------------------------------------+------------------+---------------------+--------------------------------------+
+---------------------------------------------------------------------------------------------------------------
 | 03eeacd9-XXXX-XXXX-XXXX-71a1182ee838 |                  | 172.22.205.249      |                                      |
 | 0f36bd32-XXXX-XXXX-XXXX-e41867c5b8d4 | 10.0.0.50        | 172.22.205.246      | 0a10a744-XXXX-XXXX-XXXX-b8ecdcd8bac0 |
 | 1f8d124a-XXXX-XXXX-XXXX-101c148a348d | 10.0.0.44        | 172.22.205.241      | 8c306c2b-ZZZZ-ZZZZ-ZZZZ-b64bb5753e6f |
@@ -300,7 +324,7 @@ pcs resource create HAPManager syst.html:hap_manager master-max=2 --group kubern
 | d6f96986-EEEE-EEEE-EEEE-563823df3216 | 10.0.0.38        | 172.22.205.248      | 2821603c-POPP-POPP-POPP-bd2349b29e63 |
 | e4d55da9-WWWW-WWWW-WWWW-308d9b147b13 | 10.0.0.53        | 172.22.205.247      | 8da8d613-BBBB-BBBB-BBBB-96e89e31d8f5 |
 | ea9033b1-XXXX-XXXX-XXXX-6dc56a6b9cea | 10.0.0.52        | 172.22.205.245      | c219e492-NNNN-NNNN-NNNN-62ee771c5700 |
-+--------------------------------------+------------------+---------------------+--------------------------------------+</code></pre>
+---------------------------------------------------------------------------------------------------------------</code></pre>
 <p>Para terminar de desplegar configuramos los nodos con <a href="6-Almacenamiento.html#glusterfs">GlusterFS</a></p>
 <h2 id="exponer-servicios-con-ingress">Exponer servicios con Ingress</h2>
 <p><a href="http://kubernetes.io/docs/user-guide/ingress/#what-is-ingress">Fuente k-user-guide</a> <a href="https://github.com/kubernetes/contrib/tree/master/ingress">GitHub Ingress</a> <a href="https://github.com/kubernetes/contrib/tree/master/ingress/controllers/gce">GitHub GCE</a></p>

@@ -9,6 +9,7 @@
   <li><a class="bar" href="7-Explotando_kubernetes.md">Utilización</a></li>
   <li><a class="bar" href="8-Kubernetes_ansible.md">Kubernetes y Ansible</a></li>
   <li><a class="bar" href="9-ElasticKube.md">ElasticKube</a></li>
+  <li><a class="bar" href="10-Conclusion.md">Conclusión</a></li>
   <li style="float:bottom"><a class="bar" href="Contacto.md">Contacto</a></li>
 </ul>
 </div>
@@ -18,8 +19,8 @@
 </ul>
 </div>
 
-Kubernetes HA sobre OpenStack
-=============================
+Kubernetes Cluster HA sobre OpenStack
+=====================================
 
 Proyecto Celtic Kubernetes de fin de ciclo de ASIR (sysadmin) IES Gonzalo Nazareno (Dos Hermanas, España)
 
@@ -39,6 +40,7 @@ El escenario tiene sus nombres tomados de los dioses Celtas de la siguiente entr
 7. [Explotando Kubernetes](7-Explotando_kubernetes.md)
 8. [Kubernetes con Ansible](8-Kubernetes_ansible.md)
 9. [ElasticKube](9-ElasticKube.md)
+10. [Conclusión](10-Conclusion.md)
 
 #### Los nombres elegidos para los nodos del cluster HA son
 
@@ -52,6 +54,13 @@ El escenario tiene sus nombres tomados de los dioses Celtas de la siguiente entr
 | [**Esus**](https://es.wikipedia.org/wiki/Esus)    | KMinion         | 2     |
 | [**Angus**](https://es.wikipedia.org/wiki/Angus_(mitología))      | Almacenamiento    | 1     |
 | [**Dagda**](https://es.wikipedia.org/wiki/Dagda)      | Almacenamiento    | 2     | 
+
+
+#### Presentación
+
+[Presentación Cluster Kuberentes HA](http://slides.com/tedezed/deck-1#/)
+
+<iframe src="http://slides.com/tedezed/deck-1#/" width="99%" height="400"></iframe>
 
 -----------------------------
 
@@ -106,6 +115,20 @@ Enlaces de interes
 * http://www.aventurabinaria.es/cluster-galera-on-debian-8/
 * http://www.aventurabinaria.es/kubernetes-desplegado-centos/
 * http://kubernetes.io/docs/user-guide/debugging-pods-and-replication-controllers/
+* http://docs.openstack.org/developer/magnum/
+* http://docs.openstack.org/developer/magnum/dev/dev-kubernetes-load-balancer.html
+
+Openstack y Kubernetes
+
+* http://www.tcpcloud.eu/en/blog/2016/02/12/kubernetes-and-openstack-multi-cloud-networking/
+* http://blog.kubernetes.io/2016/04/introducing-kubernetes-openstack-sig.html
+* https://www.mirantis.com/blog/magnum-vs-murano-openstack-container-strategy/
+
+Autoescalado
+
+* https://github.com/metral/corekube/blob/master/corekube-openstack.yaml
+* http://superuser.openstack.org/articles/simple-auto-scaling-environment-with-heat/
+* https://keithtenzer.com/2015/10/05/auto-scaling-applications-with-openstack-heat/
 
 -------------------------------
 

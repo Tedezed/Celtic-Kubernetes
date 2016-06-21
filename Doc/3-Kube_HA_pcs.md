@@ -9,6 +9,7 @@
   <li><a class="bar" href="7-Explotando_kubernetes.md">Utilización</a></li>
   <li><a class="bar" href="8-Kubernetes_ansible.md">Kubernetes y Ansible</a></li>
   <li><a class="bar" href="9-ElasticKube.md">ElasticKube</a></li>
+  <li><a class="bar" href="10-Conclusion.md">Conclusión</a></li>
   <li style="float:bottom"><a class="bar" href="Contacto.md">Contacto</a></li>
 </ul>
 </div>
@@ -42,6 +43,7 @@ Cluster Kubernetes HA (2 masters y 2 minions)
 			* [Configuración de recursos de Kubernetes](#conf-pcs-kubernetes)
 5. [Ajustes finales](#ajustes-finales)
 6. [Pruebas de funcionamiento](#pruebas)
+7. [Siguientes pasos](#next-step)
 
 Enlaces de interes
 ------------------
@@ -76,7 +78,7 @@ Escenario
 Esquema de funcionamiento
 -------------------------
 
-![HA](Imagenes/topo2.jpg)
+![](Imagenes/topo2.jpg)
 
 
 <div id='previo'/>
@@ -590,6 +592,10 @@ Con los dos nodos activos el cluster debera quedar de la siguiente forma
 	     Started: [ balar morrigan ]
 	 Clone Set: Controller-clone [Controller]
 	     Started: [ balar morrigan ]
+
+<div id='next-step'/>
+
+#### Siguientes Pasos
 
 Para terminar de desplegar configuramos los nodos con [HAProxy con hap_manager](5-Exponer_svc.md#hap_manager) y [GlusterFS](6-Almacenamiento.md#glusterfs).
 

@@ -6,7 +6,7 @@ div#header{
   height:500%;
   background-color:#1B2333;
   color: #FFF;
-  font-size: 16px;
+  font-size: 13px;
 }
 
 div#header ul {
@@ -28,6 +28,11 @@ div#header li a:hover {
     background-color: #555;
     color: white;
 }
+
+div#header .active {
+    background-color: #3C4778;
+}
+
 
 
 
@@ -72,3 +77,12 @@ div#control ul {
     padding: 0;
     overflow: hidden;
 }
+
+@media screen and (max-width:1100px ) {
+  div#header {
+    width:80%;
+    height:100%;
+    left:-100%;
+    margin:0;
+    position: fixed;
+  }

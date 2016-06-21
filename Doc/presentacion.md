@@ -1,29 +1,3 @@
-Documentación
-http://blog.kubernetes.io/2016/04/introducing-kubernetes-openstack-sig.html
-https://www.mirantis.com/blog/magnum-vs-murano-openstack-container-strategy/
-
-Openstack y Kubernetes
-http://www.tcpcloud.eu/en/blog/2016/02/12/kubernetes-and-openstack-multi-cloud-networking/
-
-Autoescalado:
-https://github.com/metral/corekube/blob/master/corekube-openstack.yaml
-http://superuser.openstack.org/articles/simple-auto-scaling-environment-with-heat/
-https://keithtenzer.com/2015/10/05/auto-scaling-applications-with-openstack-heat/
-
-Magnum:
-http://egonzalez.org/magnum-in-rdo-openstack-liberty-manual-installation-from-source-code/
-
-Usar Kubernetes para gestionar las cargas de trabajo de contenedores que se ejecuten en OpenStack
-
-Usar Kubernetes para gestionar los servicios de OpenStack en contenedores propios
-
-Kolla - OpenStack proporciona servicio de contenedores y herramientas de despliegue para el funcionamiento de las nubes OpenStack
-
-Kuryr - Proporciona puentes entre los modelos contenedores de redes/almacenamiento  y la infraestructura de servicios de OpenStack
-
-Magnum - Proporciona contenedores como un servicio para OpenStack
-
-Murano - Proporciona un catálogo de aplicaciones para OpenStack incluyendo soporte para Kubernetes, y para aplicaciones en contenedores, gestionados por Kubernetes.
 
 ----------------------
 

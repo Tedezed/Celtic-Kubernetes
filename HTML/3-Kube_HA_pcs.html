@@ -4,17 +4,41 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
-  <title></title>
-  <style type="text/css">@import "css/style.css";</style><link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>Cluster Kubernetes HA (2 masters y 2 minions)</title>
+  <style type="text/css">@import "css/style.css";</style><link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css" title="Ajustar líneas largas"><link href="css/sss.css" type="text/css" rel="stylesheet"><link href="css/sss.print.css" type="text/css" media="print" rel="stylesheet"><link href="css/default.css" type="text/css" rel="stylesheet"><meta content="width=device-width, initial-scale=1" name="viewport"><link rel="icon" type="image/x-icon" href="Imagenes/celtic-kubernetes.ico">
 </head>
 <body>
 <div id="header">
 <ul>
   <li>
-<a class="active" href="1-Portada.html">Home</a>
+<a class="bar" href="1-Portada.html">Home</a>
 </li>
   <li>
-<a class="bar" href="https://github.com/Tedezed/Celtic-Kubernetes">Github</a>
+<a class="bar" href="2-Kube_simple.html">Kubernetes Simple</a>
+</li>
+  <li>
+<a class="active" href="3-Kube_HA_pcs.html">Kubernetes HA</a>
+</li>
+  <li>
+<a class="bar" href="4-Addons.html">Addons</a>
+</li>
+  <li>
+<a class="bar" href="5-Exponer_svc.html">Exponer servicios</a>
+</li>
+  <li>
+<a class="bar" href="6-Almacenamiento.html">Almacenamiento persistente</a>
+</li>
+  <li>
+<a class="bar" href="7-Explotando_kubernetes.html">Utilización</a>
+</li>
+  <li>
+<a class="bar" href="8-Kubernetes_ansible.html">Kubernetes y Ansible</a>
+</li>
+  <li>
+<a class="bar" href="9-ElasticKube.html">ElasticKube</a>
+</li>
+  <li>
+<a class="bar" href="10-Conclusion.html">Conclusión</a>
 </li>
   <li style="float:bottom">
 <a class="bar" href="Contacto.html">Contacto</a>
@@ -32,7 +56,7 @@
 </ul>
 </div>
 <h1 id="cluster-kubernetes-ha-2-masters-y-2-minions">Cluster Kubernetes HA (2 masters y 2 minions)</h1>
-<p><a href="http://www.colliernotes.com/2015/07/configure-highly-available-kubernetes.html">Inspirado en Colliernotes</a></p>
+<p><a href="https://twitter.com/collier_s">Agradecimientos a Scott Collier</a></p>
 <div id='indice'/>
 
 <h2 id="contenidos"><a href="#indice">Contenidos</a></h2>
@@ -56,6 +80,7 @@
 </ul></li>
 <li><a href="#ajustes-finales">Ajustes finales</a></li>
 <li><a href="#pruebas">Pruebas de funcionamiento</a></li>
+<li><a href="#next-step">Siguientes pasos</a></li>
 </ol>
 <h2 id="enlaces-de-interes">Enlaces de interes</h2>
 <p>http://kubernetes.io/docs/user-guide/debugging-pods-and-replication-controllers/</p>
@@ -156,7 +181,7 @@
 </table>
 <h2 id="esquema-de-funcionamiento">Esquema de funcionamiento</h2>
 <div class="figure">
-<img src="Imagenes/topo2.jpg" alt="HA" /><p class="caption">HA</p>
+<img src="Imagenes/topo2.jpg" />
 </div>
 <div id='previo'/>
 
@@ -540,6 +565,9 @@ Full list of resources:
      Started: [ balar morrigan ]
  Clone Set: Controller-clone [Controller]
      Started: [ balar morrigan ]</code></pre>
+<div id='next-step'/>
+
+<h4 id="siguientes-pasos">Siguientes Pasos</h4>
 <p>Para terminar de desplegar configuramos los nodos con <a href="5-Exponer_svc.html#hap_manager">HAProxy con hap_manager</a> y <a href="6-Almacenamiento.html#glusterfs">GlusterFS</a>.</p>
 <hr />
 <div id="control">
