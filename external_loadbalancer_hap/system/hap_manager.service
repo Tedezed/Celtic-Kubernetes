@@ -6,14 +6,11 @@
 Description=HAP Manager
 
 [Service]
-<<<<<<< HEAD
 User=root
-=======
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 Type=forking
-ExecStart=/usr/bin/python /Celtic-Kubernetes/external_loadbalancer_hap/hap_manager_daemon.py start
-ExecStop=/usr/bin/python /Celtic-Kubernetes/external_loadbalancer_hap/hap_manager_daemon.py stop
-Restart=/usr/bin/python /Celtic-Kubernetes/external_loadbalancer_hap/hap_manager_daemon.py stop; /usr/bin/python /Celtic-Kubernetes/external_loadbalancer_hap/hap_manager_daemon.py start
+ExecStart=/usr/bin/python /hap_manager/external_loadbalancer_hap/hap_manager_daemon.py start
+ExecStop=/usr/bin/python /hap_manager/external_loadbalancer_hap/hap_manager_daemon.py stop
+Restart=/usr/bin/python /hap_manager/external_loadbalancer_hap/hap_manager_daemon.py stop; /usr/bin/python /hap_manager/external_loadbalancer_hap/hap_manager_daemon.py start
 PIDFile=/var/run/hap_manager.pid
 
 [Install]

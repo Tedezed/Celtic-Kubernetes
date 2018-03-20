@@ -32,12 +32,9 @@ def write_template_conf(directory):
 	file_conf.write(template_render)
 	file_conf.close()
 
-<<<<<<< HEAD
 	# Reload
 	reload_hap()
 
-=======
->>>>>>> 324fe55465cb37533e0d50a571dbc2358458b4b4
 	# Dominion
 	#print get_json_pods[3]['metadata']['labels']['domain']
 
