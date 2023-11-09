@@ -21,7 +21,7 @@ Contacto
 
 Proyecto de fin de ciclo de ASIR (sysadmin) IES Gonzalo Nazareno (Dos Hermanas, España)
 
-Por **Juan Manuel Torres Díaz**
+Por **JM Torres**
 
 ********
 * [Linkedin](https://es.linkedin.com/in/jmtorresd)
